@@ -100,29 +100,57 @@ The IRI scheme. Can be undefined.
 
 The IRI authority. Can be undefined.
 
+=head2 $self->authority( --> Str|Undef)
+
+Proxy method for iauthority.
+
 =head2 $self->ipath( --> Str)
 
 The IRI path. Note that an IRI always have a path, although it can be empty.
+
+=head2 $self->path( --> Str)
+
+Proxy method for ipath.
 
 =head2 $self->iquery( --> Str|Undef)
 
 The IRI query. Can be undefined.
 
+=head2 $self->query( --> Str|Undef)
+
+Proxy method for iquery.
+
 =head2 $self->ifragment( --> Str|Undef)
 
 The IRI fragment. Can be undefined.
+
+=head2 $self->fragment( --> Str|Undef)
+
+Proxy method for ifragment.
 
 =head2 $self->ihier_part( --> Str|Undef)
 
 The IRI hier part. Can be undefined.
 
+=head2 $self->hier_part( --> Str|Undef)
+
+Proxy method for ihier_part.
+
 =head2 $self->iuserinfo( --> Str|Undef)
 
 The IRI userinfo. Can be undefined.
 
+=head2 $self->userinfo( --> Str|Undef)
+
+Proxy method for iuserinfo.
+
 =head2 $self->ihost( --> Str|Undef)
 
 The IRI host. Can be undefined.
+
+=head2 $self->host( --> Str|Undef)
+
+Proxy method for ihost.
 
 =head2 $self->port( --> Str|Undef)
 
@@ -131,6 +159,10 @@ The IRI port. Can be undefined.
 =head2 $self->irelative_part( --> Str|Undef)
 
 The IRI relative part. Can be undefined.
+
+=head2 $self->relative_part( --> Str|Undef)
+
+Proxy method for irelative_part.
 
 =head2 $self->ip_literal( --> Str|Undef)
 
@@ -147,6 +179,10 @@ The IRI IP Version 4 address. Can be undefined.
 =head2 $self->ireg_name( --> Str|Undef)
 
 The IRI registered name. Can be undefined.
+
+=head2 $self->reg_name( --> Str|Undef)
+
+Proxy method for ireg_name.
 
 =head2 $self->is_absolute( --> Bool)
 
@@ -213,10 +249,23 @@ sub BUILD {
 sub is_absolute {
   my ($self) = @_;
   #
-  ## No need to reparse. An absolute IRI is when scheme and ihier_part are defined
+  # No need to reparse. An absolute IRI is when scheme and ihier_part are defined
+  # and fragment is undefined
   #
-  return Str->check($self->scheme) && Str->check($self->ihier_part);
+  return Str->check($self->scheme) && Str->check($self->ihier_part) && Undef->check($self->ifragment);
 }
+
+#
+# Proxy methods for URI oriented applications
+sub authority     { shift->iauthority     }
+sub path          { shift->ipath          }
+sub query         { shift->iquery         }
+sub fragment      { shift->ifragment      }
+sub hier_part     { shift->ihier_part     }
+sub userinfo      { shift->iuserinfo      }
+sub host          { shift->ihost          }
+sub relative_part { shift->irelative_part }
+sub reg_name      { shift->ireg_name      }
 
 #
 # Grammar rules

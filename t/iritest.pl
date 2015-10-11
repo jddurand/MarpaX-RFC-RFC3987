@@ -15,7 +15,7 @@ BEGIN {
 }
 
 our @URI_ABSOLUTE_TEST = (
-            [ "http://localhost/"                                   => 1 ],
+            [ "/localhost/?jdd#f±f2"                                   => 1 ],
             [ "ftp://ftp.is.co.za/rfc/rfc1808.txt"                  => 1 ],
             [ "http://www.ietf.org/rfc/rfc2396.txt"                 => 1 ],
             [ "ldap://[2001:db8::7]/c=GB?objectClass?one"           => 1 ],
@@ -36,6 +36,10 @@ our @URI_CANONICAL_TEST = (
 
 foreach (@URI_ABSOLUTE_TEST) {
   my $got;
+  use Data::Printer;
+  p(MarpaX::RFC::RFC3987->new($_->[0]));
+  exit;
+  ok(($got = MarpaX::RFC::RFC3987->new($_->[0])->is_absolute) == $_->[1], 'MarpaX::RFC::RFC3987->new->("' . _safePrint($_->[0]) . '")->is_absolute returned ' . int($got) . ' == ' . $_->[1] . ' ?');
   ok(($got = MarpaX::RFC::RFC3987->new($_->[0])->is_absolute) == $_->[1], 'MarpaX::RFC::RFC3987->new->("' . _safePrint($_->[0]) . '")->is_absolute returned ' . int($got) . ' == ' . $_->[1] . ' ?');
 }
 

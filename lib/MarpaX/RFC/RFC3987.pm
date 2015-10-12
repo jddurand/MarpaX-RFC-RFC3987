@@ -9,7 +9,6 @@ package MarpaX::RFC::RFC3987;
 
 # AUTHORITY
 
-use Class::Load qw/try_load_class/;
 use Encode::Locale;
 use Encode qw/decode/;
 use Moo;
@@ -92,19 +91,6 @@ sub _trigger_input {
 
   local $MarpaX::RFC::RFC3987::SELF = $self;
   $self->__parse($input);
-
-  my $scheme = $self->_struct->scheme;
-  if (Str->check($scheme) && length($scheme)) {
-    #
-    # Look if this scheme is supported
-    #
-    my $subclass = sprintf('%s::%s', __PACKAGE__, $scheme);
-    my ($loadrc, $errormessage) =  try_load_class($subclass);
-    #
-    if ($loadrc) {
-    }
-  }
-
 }
 
 sub _newinput {

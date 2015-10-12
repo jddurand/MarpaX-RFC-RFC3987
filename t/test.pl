@@ -2,7 +2,7 @@
 use strict;
 use warnings FATAL => 'all';
 use MarpaX::RFC::RFC3987;
-use Data::Printer;
+use Data::Printer {class => {expand => 'all'}};
 use Log::Any qw/$log/;
 use Log::Any::Adapter;
 use Log::Log4perl qw/:easy/;
@@ -20,13 +20,6 @@ DEFAULT_LOG4PERL_CONF
 Log::Log4perl::init(\$defaultLog4perlConf);
 Log::Any::Adapter->set('Log4perl');
 
-#
-# Untaint
-#
-my $input = {
-             bytes => "http:\x{12}\x{34}//test?voila1...\&voila2\#f\#f2"
-            };
-
-my $this = MarpaX::RFC::RFC3987->new($input);
+my $this = MarpaX::RFC::RFC3987->new('UTF8', "http://test?voila1...\&voila2\#f");
 
 p $this;

@@ -1,4 +1,4 @@
-package MarpaX::RFC::RFC3987::BNF;
+package MarpaX::RFC::RFC3987::_common::BNF;
 use Moo;
 use MooX::ClassAttribute;
 use Types::Standard -all;

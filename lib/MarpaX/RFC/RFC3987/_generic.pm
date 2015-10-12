@@ -9,52 +9,45 @@ package MarpaX::RFC::RFC3987::_generic;
 use Moo;
 use MarpaX::RFC::RFC3987::_generic::BNF;
 use Types::Standard -all;
-local $MarpaX::RFC::RFC3987::_generic::SELF;
 use MooX::Struct -rw,
-  Common => [
-             scheme   => [ isa => Str|Undef, default => sub { undef } ],
-             opaque   => [ isa => Str      , default => sub {    '' } ],
-             fragment => [ isa => Str|Undef, default => sub { undef } ]
+  Generic => [
+              hier_part => [ isa => Str|Undef, default => sub { undef } ],
+              query     => [ isa => Str|Undef, default => sub { undef } ],
+              authority => [ isa => Str|Undef, default => sub { undef } ],
+              userinfo  => [ isa => Str|Undef, default => sub { undef } ],
+              host      => [ isa => Str|Undef, default => sub { undef } ],
+              port      => [ isa => Str|Undef, default => sub { undef } ],
             ];
 use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdentifier'
   => {
-      'BNF'         => ${MarpaX::RFC::RFC3987::_generic::BNF->section_data('BNF')},
-      'self_ref'    => \$MarpaX::RFC::RFC3987::_generic::SELF,
-      'start'       => '<IRI reference>',
+      package     => __PACKAGE__,
+      BNF         => MarpaX::RFC::RFC3987::_generic::BNF->new,
+      start       => '<IRI reference>',
       G1 => {
-             '<scheme>'         => sub { shift; $MarpaX::RFC::RFC3987::_generic::SELF->_struct->{scheme}   .= join('', @_) },
-             '<ihier part>'     => sub { shift; $MarpaX::RFC::RFC3987::_generic::SELF->_struct->{opaque}   .= join('', @_) },
-             '<irelative part>' => sub { shift; $MarpaX::RFC::RFC3987::_generic::SELF->_struct->{opaque}   .= join('', @_) },
-             '<iquery>'         => sub { shift; $MarpaX::RFC::RFC3987::_generic::SELF->_struct->{opaque}   .= join('', '?', @_) },
-             '<ifragment>'      => sub { shift; $MarpaX::RFC::RFC3987::_generic::SELF->_struct->{fragment} .= join('', @_) },
+             '<ihier_part>' => sub { $MarpaX::RFC::RFC3987::SELF->_struct->hier_part($_[1]) },
+             '<iquery>'     => sub { $MarpaX::RFC::RFC3987::SELF->_struct->query    ($_[1]) },
+             '<iauthority>' => sub { $MarpaX::RFC::RFC3987::SELF->_struct->authority($_[1]) },
+             '<iuserinfo>'  => sub { $MarpaX::RFC::RFC3987::SELF->_struct->userinfo ($_[1]) },
+             '<ihost>'      => sub { $MarpaX::RFC::RFC3987::SELF->_struct->host     ($_[1]) },
+             '<iport>'      => sub { $MarpaX::RFC::RFC3987::SELF->_struct->port     ($_[1]) },
             }
      };
 
-has _input  => ( is => 'ro', isa => Str,    required => 1);
-has _struct => ( is => 'ro', isa => Object, default => sub { Common->new() });
+has input   => ( is => 'ro', isa => Str,    required => 1);
+has _struct => ( is => 'rw', isa => Object, default => sub { Generic->new() });
 
 sub BUILDARGS {
   my ($self, @args) = @_;
-  unshift(@args, '_input') if @args % 2;
+  unshift(@args, 'input') if @args % 2;
   return { @args };
 }
 
 sub BUILD {
   my ($self) = @_;
-  $MarpaX::RFC::RFC3987::_generic::SELF = $self;
+  local $MarpaX::RFC::RFC3987::SELF = $self;
   $self->grammar->parse(\$self->_input, { ranking_method => 'high_rule_only' });
-  use Data::Dumper;
-  print STDERR Dumper($self->_struct);
 }
 
-sub has_recognized_scheme {
-  my ($self) = @_;
-  Str->check($self->_struct->scheme)
-}
-
-sub opaque {
-  my ($self) = @_;
-  $self->_struct->opaque(@_);
-}
+extends 'MarpaX::RFC::RFC3987::_common';
 
 1;

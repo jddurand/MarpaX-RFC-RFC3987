@@ -1,6 +1,8 @@
 package MarpaX::RFC::RFC3987::_generic::BNF;
-use Data::Section -setup;
 use Moo;
+extends 'MarpaX::RFC::RFC3987::_common::BNF';
+use MooX::ClassAttribute;
+use Types::Standard -all;
 
 # ABSTRACT: Internationalized Resource Identifier (IRI): Generic Syntax - Marpa BNF
 
@@ -8,16 +10,15 @@ use Moo;
 
 # AUTHORITY
 
-sub grammar_option {
-  my ($class) = @_;
+our $DATA = do { local $/; <DATA> };
 
-  return { ranking_method => 'high_rule_only' };
-}
+around bnf => sub { $DATA };
+
+with 'MarpaX::Role::Parameterized::ResourceIdentifier::BNF';
 
 1;
 
 __DATA__
-__[ BNF ]__
 <IRI>         ::= <scheme> ':' <ihier part> '?' <iquery> '#' <ifragment>
                 | <scheme> ':' <ihier part> '?' <iquery>
                 | <scheme> ':' <ihier part>              '#' <ifragment>

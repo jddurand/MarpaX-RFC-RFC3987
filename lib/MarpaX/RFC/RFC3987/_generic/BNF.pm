@@ -1,4 +1,4 @@
-package MarpaX::RFC::RFC3987::Generic::BNF;
+package MarpaX::RFC::RFC3987::_generic::BNF;
 use Data::Section -setup;
 use Moo;
 

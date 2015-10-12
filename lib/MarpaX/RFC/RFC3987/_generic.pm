@@ -1,4 +1,4 @@
-package MarpaX::RFC::RFC3987::Generic;
+package MarpaX::RFC::RFC3987::_generic;
 
 # ABSTRACT: Internationalized Resource Identifier (IRI): Generic Syntax - Marpa Parser
 
@@ -7,9 +7,9 @@ package MarpaX::RFC::RFC3987::Generic;
 # AUTHORITY
 
 use Moo;
-use MarpaX::RFC::RFC3987::Generic;
+use MarpaX::RFC::RFC3987::_generic::BNF;
 use Types::Standard -all;
-local $MarpaX::RFC::RFC3987::Generic::SELF;
+local $MarpaX::RFC::RFC3987::_generic::SELF;
 use MooX::Struct -rw,
   Common => [
              scheme   => [ isa => Str|Undef, default => sub { undef } ],
@@ -18,15 +18,15 @@ use MooX::Struct -rw,
             ];
 use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdentifier'
   => {
-      'BNF'         => ${MarpaX::RFC::RFC3987::Generic::BNF->section_data('BNF')},
-      'self_ref'    => \$MarpaX::RFC::RFC3987::Generic::SELF,
+      'BNF'         => ${MarpaX::RFC::RFC3987::_generic::BNF->section_data('BNF')},
+      'self_ref'    => \$MarpaX::RFC::RFC3987::_generic::SELF,
       'start'       => '<IRI reference>',
       G1 => {
-             '<scheme>'         => sub { shift; $MarpaX::RFC::RFC3987::Generic::SELF->_struct->{scheme}   .= join('', @_) },
-             '<ihier part>'     => sub { shift; $MarpaX::RFC::RFC3987::Generic::SELF->_struct->{opaque}   .= join('', @_) },
-             '<irelative part>' => sub { shift; $MarpaX::RFC::RFC3987::Generic::SELF->_struct->{opaque}   .= join('', @_) },
-             '<iquery>'         => sub { shift; $MarpaX::RFC::RFC3987::Generic::SELF->_struct->{opaque}   .= join('', '?', @_) },
-             '<ifragment>'      => sub { shift; $MarpaX::RFC::RFC3987::Generic::SELF->_struct->{fragment} .= join('', @_) },
+             '<scheme>'         => sub { shift; $MarpaX::RFC::RFC3987::_generic::SELF->_struct->{scheme}   .= join('', @_) },
+             '<ihier part>'     => sub { shift; $MarpaX::RFC::RFC3987::_generic::SELF->_struct->{opaque}   .= join('', @_) },
+             '<irelative part>' => sub { shift; $MarpaX::RFC::RFC3987::_generic::SELF->_struct->{opaque}   .= join('', @_) },
+             '<iquery>'         => sub { shift; $MarpaX::RFC::RFC3987::_generic::SELF->_struct->{opaque}   .= join('', '?', @_) },
+             '<ifragment>'      => sub { shift; $MarpaX::RFC::RFC3987::_generic::SELF->_struct->{fragment} .= join('', @_) },
             }
      };
 
@@ -41,7 +41,7 @@ sub BUILDARGS {
 
 sub BUILD {
   my ($self) = @_;
-  $MarpaX::RFC::RFC3987::Generic::SELF = $self;
+  $MarpaX::RFC::RFC3987::_generic::SELF = $self;
   $self->grammar->parse(\$self->_input, { ranking_method => 'high_rule_only' });
   use Data::Dumper;
   print STDERR Dumper($self->_struct);

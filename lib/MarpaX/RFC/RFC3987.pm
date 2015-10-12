@@ -9,13 +9,10 @@ package MarpaX::RFC::RFC3987;
 
 # AUTHORITY
 
-use Carp qw/croak/;
 use Class::Load qw/load_class/;
 use Encode qw/decode/;
-use Encode::Locale;
 use MarpaX::RFC::RFC3987::_common;
 use MarpaX::RFC::RFC3987::_generic;
-use Scalar::Util qw/reftype/;
 use Try::Tiny;
 
 #

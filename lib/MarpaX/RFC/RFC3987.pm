@@ -10,7 +10,7 @@ package MarpaX::RFC::RFC3987;
 # AUTHORITY
 
 use Carp qw/croak/;
-use Class::Load qw/try_load_class/;
+use Class::Load qw/load_class/;
 use Encode qw/decode/;
 use Encode::Locale;
 use MarpaX::RFC::RFC3987::_common;
@@ -33,7 +33,7 @@ sub new {
     # The specific ?
     #
     my $class = sprintf('%s::%s', __PACKAGE__, ${^MATCH});
-    try { $new = $class->new($input) };
+    try { load_class($class); $new = $class->new($input) };
   }
   if (! $new) {
     #

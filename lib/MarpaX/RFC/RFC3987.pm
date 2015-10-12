@@ -32,22 +32,16 @@ sub new {
     my $class = sprintf('%s::%s', __PACKAGE__, ${^MATCH});
     try { load_class($class); $new = $class->new($input) };
   }
-  if (! $new) {
-    #
-    # The generic ?
-    #
-    my $class = sprintf('%s::%s', __PACKAGE__, '_generic');
-    try { $new = $class->new($input) };
-  }
-  if (! $new) {
-    #
-    # At least common must match
-    #
-    my $class = sprintf('%s::%s', __PACKAGE__, '_common');
-    $new = $class->new($input);
-  }
+  #
+  # The generic ?
+  #
+  try { $new = MarpaX::RFC::RFC3987::_generic->new($input) } if (! $new);
+  #
+  # At least common must match
+  #
+  $new = MarpaX::RFC::RFC3987::_common->new($input) if (! $new);
 
-  $new;
+  $new
 }
 
 1;

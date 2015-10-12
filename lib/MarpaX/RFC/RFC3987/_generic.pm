@@ -33,7 +33,7 @@ use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdenti
             }
      };
 
-has input   => ( is => 'ro', isa => Str,    required => 1);
+has input   => ( is => 'ro', isa => Str,    required => 1, trigger => 1);
 has _struct => ( is => 'rw', isa => Object, default => sub { Generic->new() });
 
 sub BUILDARGS {
@@ -42,10 +42,10 @@ sub BUILDARGS {
   return { @args };
 }
 
-sub BUILD {
-  my ($self) = @_;
+sub _trigger_input {
+  my ($self ,$input) = @_;
   local $MarpaX::RFC::RFC3987::SELF = $self;
-  $self->grammar->parse(\$self->_input, { ranking_method => 'high_rule_only' });
+  $self->grammar->parse(\$input, { ranking_method => 'high_rule_only' });
 }
 
 extends 'MarpaX::RFC::RFC3987::_common';

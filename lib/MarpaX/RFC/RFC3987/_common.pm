@@ -65,6 +65,4 @@ sub fragment {
   $self->_struct->fragment(@_);
 }
 
-with 'MooX::Role::Logger';
-
 1;

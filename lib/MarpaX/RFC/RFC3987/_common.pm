@@ -65,4 +65,6 @@ sub fragment {
   $self->_struct->fragment(@_);
 }
 
+extends 'MarpaX::RFC::RFC3987';
+
 1;

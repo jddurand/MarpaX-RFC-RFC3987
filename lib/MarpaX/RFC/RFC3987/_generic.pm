@@ -1,53 +1,31 @@
+use strict;
+use warnings FATAL => 'all';
+
 package MarpaX::RFC::RFC3987::_generic;
 
-# ABSTRACT: Internationalized Resource Identifier (IRI): Generic Syntax - Marpa Parser
+# ABSTRACT: Internationalized Resource Identifier (IRI): Generic syntax implementation
 
 # VERSION
 
 # AUTHORITY
 
 use Moo;
-use MarpaX::RFC::RFC3987::_generic::BNF;
-use Types::Standard -all;
-use MooX::Struct -rw,
-  Generic => [
-              hier_part => [ isa => Str|Undef, default => sub { undef } ],
-              query     => [ isa => Str|Undef, default => sub { undef } ],
-              authority => [ isa => Str|Undef, default => sub { undef } ],
-              userinfo  => [ isa => Str|Undef, default => sub { undef } ],
-              host      => [ isa => Str|Undef, default => sub { undef } ],
-              port      => [ isa => Str|Undef, default => sub { undef } ],
-            ];
-use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdentifier'
+extends 'MarpaX::RFC::RFC3987::_common';
+
+use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdentifier::Role::_generic'
   => {
+
       package     => __PACKAGE__,
-      BNF         => MarpaX::RFC::RFC3987::_generic::BNF->new,
+      BNF_package => 'MarpaX::RFC::RFC3987::_generic::BNF',
       start       => '<IRI reference>',
       G1 => {
-             '<ihier_part>' => sub { $MarpaX::RFC::RFC3987::SELF->_struct->hier_part($_[1]) },
-             '<iquery>'     => sub { $MarpaX::RFC::RFC3987::SELF->_struct->query    ($_[1]) },
-             '<iauthority>' => sub { $MarpaX::RFC::RFC3987::SELF->_struct->authority($_[1]) },
-             '<iuserinfo>'  => sub { $MarpaX::RFC::RFC3987::SELF->_struct->userinfo ($_[1]) },
-             '<ihost>'      => sub { $MarpaX::RFC::RFC3987::SELF->_struct->host     ($_[1]) },
-             '<iport>'      => sub { $MarpaX::RFC::RFC3987::SELF->_struct->port     ($_[1]) },
+             '<ihier_part>' => sub { $_[0]->hier_part($_[1]) },
+             '<iquery>'     => sub { $_[0]->query    ($_[1]) },
+             '<iauthority>' => sub { $_[0]->authority($_[1]) },
+             '<iuserinfo>'  => sub { $_[0]->userinfo ($_[1]) },
+             '<ihost>'      => sub { $_[0]->host     ($_[1]) },
+             '<iport>'      => sub { $_[0]->port     ($_[1]) },
             }
      };
-
-has input   => ( is => 'ro', isa => Str,    required => 1, trigger => 1);
-has _struct => ( is => 'rw', isa => Object, default => sub { Generic->new() });
-
-sub BUILDARGS {
-  my ($self, @args) = @_;
-  unshift(@args, 'input') if @args % 2;
-  return { @args };
-}
-
-sub _trigger_input {
-  my ($self ,$input) = @_;
-  local $MarpaX::RFC::RFC3987::SELF = $self;
-  $self->grammar->parse(\$input, { ranking_method => 'high_rule_only' });
-}
-
-extends 'MarpaX::RFC::RFC3987::_common';
 
 1;

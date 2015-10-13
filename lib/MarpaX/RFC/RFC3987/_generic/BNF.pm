@@ -14,7 +14,7 @@ our $DATA = do { local $/; <DATA> };
 
 around bnf => sub { $DATA };
 
-with 'MarpaX::Role::Parameterized::ResourceIdentifier::BNF';
+with 'MarpaX::Role::Parameterized::ResourceIdentifier::Role::BNF';
 
 1;
 

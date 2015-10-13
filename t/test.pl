@@ -1,8 +1,8 @@
 #!env perl
 use strict;
 use warnings FATAL => 'all';
-use MarpaX::RFC::RFC3987;
 use Data::Printer {class => {expand => 'all'}};
+use MarpaX::RFC::RFC3987;
 use Log::Any qw/$log/;
 use Log::Any::Adapter;
 use Log::Log4perl qw/:easy/;
@@ -21,5 +21,4 @@ Log::Log4perl::init(\$defaultLog4perlConf);
 Log::Any::Adapter->set('Log4perl');
 
 my $this = MarpaX::RFC::RFC3987->new(['UTF8', "http://test?voila1...\&voila2\#f"]);
-
 p $this;

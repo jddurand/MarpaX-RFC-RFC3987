@@ -14,13 +14,10 @@ our $DATA = do { local $/; <DATA> };
 class_has bnf               => ( is => 'ro', isa => Str,     default => sub { $DATA } );
 class_has grammar_option    => ( is => 'ro', isa => HashRef, default => sub { { } } );
 class_has recognizer_option => ( is => 'ro', isa => HashRef, default => sub { { ranking_method => 'high_rule_only' } } );
-class_has escape            => ( is => 'ro', isa => CodeRef, default => sub { \&_escape } );
-class_has unescape          => ( is => 'ro', isa => CodeRef, default => sub { \&_unescape } );
+class_has escape            => ( is => 'ro', isa => CodeRef, default => sub { sub { return $_[1] } } );   # Don't know
+class_has unescape          => ( is => 'ro', isa => CodeRef, default => sub { sub { return $_[1] } } );   # Don't know
 
-sub _escape {}
-sub _unescape {}
-
-with 'MarpaX::Role::Parameterized::ResourceIdentifier::BNF';
+with 'MarpaX::Role::Parameterized::ResourceIdentifier::Role::BNF';
 
 1;
 

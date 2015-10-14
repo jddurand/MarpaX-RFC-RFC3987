@@ -10,8 +10,9 @@ package MarpaX::RFC::RFC3987::_generic;
 # AUTHORITY
 
 use Moo;
-extends 'MarpaX::RFC::RFC3987::_common';
-
+BEGIN {
+  extends 'MarpaX::RFC::RFC3987::_common';
+}
 use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdentifier::Role::_generic'
   => {
 
@@ -23,7 +24,7 @@ use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdenti
              '<iquery>'     => sub { $_[0]->query    ($_[1]) },
              '<iauthority>' => sub { $_[0]->authority($_[1]) },
              '<iuserinfo>'  => sub { $_[0]->userinfo ($_[1]) },
-             '<ihost>'      => sub { $_[0]->host     ($_[1]) },
+             '<ihost>'      => sub { print STDERR "<" . join('> <', @_) . ">\n"; $_>$_[0]->host     ($_[1]) },
              '<iport>'      => sub { $_[0]->port     ($_[1]) },
             }
      };

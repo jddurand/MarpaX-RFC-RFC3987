@@ -20,5 +20,5 @@ DEFAULT_LOG4PERL_CONF
 Log::Log4perl::init(\$defaultLog4perlConf);
 Log::Any::Adapter->set('Log4perl');
 
-my $this = MarpaX::RFC::RFC3987->new(['UTF8', "http://test?voila1...\&voila2\#f"]);
-p $this;
+print STDERR MarpaX::RFC::RFC3987->new("http://test?voila1...\&voila2\#f")->has_recognized_scheme . "\n";;
+print STDERR MarpaX::RFC::RFC3987->new("_http://test?voila1...\&voila2\#f")->has_recognized_scheme . "\n";;

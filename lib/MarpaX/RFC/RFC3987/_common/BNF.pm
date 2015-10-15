@@ -22,16 +22,38 @@ with 'MarpaX::Role::Parameterized::ResourceIdentifier::Role::BNF';
 1;
 
 __DATA__
-lexeme default = latm => 1
-<common>  ::= <scheme> ':' <opaque> '#' <fragment> rank =>   0
-<common>  ::= <scheme> ':' <opaque>                rank =>  -1
-<common>  ::= <scheme> ':'          '#' <fragment> rank =>  -2
-<common>  ::= <scheme> ':'                         rank =>  -3
-<common>  ::=              <opaque> '#' <fragment> rank =>  -4
-<common>  ::=              <opaque>                rank =>  -5
-<common>  ::= ;
+#
+# Official for generic syntax is
+# my ($scheme, $authority, $path, $query, $fragment) =
+#  $uri =~ m|
+#            (?:([^:/?#]+):)?
+#            (?://([^/?#]*))?
+#            ([^?#]*)
+#            (?:\?([^#]*))?
+#            (?:#(.*))?
+#           |x;
+#
+# The / and ? are assuming the generic behaviour. By removing them
+# we are back to the total opaque regexp:
+#  $uri =~ m|
+#            (?:([^:/?#]+):)?
+#            (?://([^/?#]*))?
+#            ([^?#]*)
+#            (?:\?([^#]*))?
+#            (?:#(.*))?
+#           |x;
+#  $uri =~ m|
+#            (?:([^:#]+):)?
+#            ([^#]*)
+#            (?:#(.*))?
+#           |x;
+#
 
-
+<common>         ::= <scheme maybe> <opaque> <fragment maybe>
+<scheme maybe>   ::= <scheme> ':'
+<scheme maybe>   ::=
 <scheme>         ::= [^:#]+
 <opaque>         ::= [^#]*
+<fragment maybe> ::= '#' <fragment>
+<fragment maybe> ::=
 <fragment>       ::= [\s\S]*

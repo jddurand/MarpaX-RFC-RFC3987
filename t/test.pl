@@ -2,8 +2,10 @@
 use strict;
 use warnings FATAL => 'all';
 use Data::Dumper;
-use Data::Printer {class => {expand => 'all'}};
+use Data::Printer;
 use MarpaX::RFC::RFC3987;
+use MarpaX::RFC::RFC3987::_common;
+use MarpaX::RFC::RFC3987::_generic;
 use Log::Any qw/$log/;
 use Log::Any::Adapter;
 use Log::Log4perl qw/:easy/;
@@ -12,7 +14,7 @@ use Log::Log4perl qw/:easy/;
 # Init
 # ----
 my $defaultLog4perlConf = <<DEFAULT_LOG4PERL_CONF;
-log4perl.rootLogger              = DEBUG, Screen
+log4perl.rootLogger              = TRACE, Screen
 log4perl.appender.Screen         = Log::Log4perl::Appender::Screen
 log4perl.appender.Screen.stderr  = 0
 log4perl.appender.Screen.layout  = PatternLayout
@@ -21,5 +23,5 @@ DEFAULT_LOG4PERL_CONF
 Log::Log4perl::init(\$defaultLog4perlConf);
 Log::Any::Adapter->set('Log4perl');
 
-print STDERR Dumper(MarpaX::RFC::RFC3987->new("http://test?voila1...\&voila2\#f"));
+print STDERR Dumper(MarpaX::RFC::RFC3987->new(shift || "http://test?voila1...\&voila2\#f"));
 # p(MarpaX::RFC::RFC3987->new("http://test?voila1...\&voila2\#f"));

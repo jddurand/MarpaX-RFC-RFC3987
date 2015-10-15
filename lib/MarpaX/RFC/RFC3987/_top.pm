@@ -9,8 +9,12 @@ package MarpaX::RFC::RFC3987::_top;
 
 # AUTHORITY
 
-use Moo;
-with 'MarpaX::Role::Parameterized::ResourceIdentifier::Role::_top';
+#
+# There are hacks like MooX::Failover
+# Neverthless, I believe it is more portable just to write it
+# in the old way
+#
+use parent qw/MarpaX::Role::Parameterized::ResourceIdentifier::Role::_top/;
 
 1;
 

@@ -10,9 +10,6 @@ package MarpaX::RFC::RFC3987::_common;
 # AUTHORITY
 
 use Moo;
-BEGIN {
-  extends 'MarpaX::RFC::RFC3987::_top';
-}
 use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdentifier::Role::_common'
   => {
       package     => __PACKAGE__,

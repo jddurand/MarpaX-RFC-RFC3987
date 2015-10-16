@@ -36,13 +36,6 @@ __DATA__
 # The / and ? are assuming the generic behaviour. By removing them
 # we are back to the total opaque regexp:
 #  $uri =~ m|
-#            (?:([^:/?#]+):)?
-#            (?://([^/?#]*))?
-#            ([^?#]*)
-#            (?:\?([^#]*))?
-#            (?:#(.*))?
-#           |x;
-#  $uri =~ m|
 #            (?:([^:#]+):)?
 #            ([^#]*)
 #            (?:#(.*))?

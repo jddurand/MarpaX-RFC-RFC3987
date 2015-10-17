@@ -1,6 +1,5 @@
 package MarpaX::RFC::RFC3987::_generic::BNF;
 use Moo;
-extends 'MarpaX::RFC::RFC3987::_common::BNF';
 use MooX::ClassAttribute;
 use Types::Standard -all;
 
@@ -12,7 +11,9 @@ use Types::Standard -all;
 
 our $DATA = do { local $/; <DATA> };
 
-around bnf => sub { $DATA };
+class_has bnf               => ( is => 'ro', isa => Str, default => sub { $DATA } );
+class_has start_symbol      => ( is => 'ro', isa => Str, default => sub { '<IRI reference>' } );
+class_has gen_delims_symbol => ( is => 'ro', isa => Str, default => sub { '<gen delims>' } );
 
 with 'MarpaX::Role::Parameterized::ResourceIdentifier::Role::BNF';
 

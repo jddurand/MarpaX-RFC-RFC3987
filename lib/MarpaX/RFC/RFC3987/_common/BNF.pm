@@ -11,11 +11,9 @@ use Types::Standard -all;
 
 our $DATA = do { local $/; <DATA> };
 
-class_has bnf               => ( is => 'ro', isa => Str,     default => sub { $DATA } );
-class_has grammar_option    => ( is => 'ro', isa => HashRef, default => sub { { } } );
-class_has recognizer_option => ( is => 'ro', isa => HashRef, default => sub { { ranking_method => 'high_rule_only' } } );
-class_has escape            => ( is => 'ro', isa => CodeRef, default => sub { sub { return $_[1] } } );   # Don't know
-class_has unescape          => ( is => 'ro', isa => CodeRef, default => sub { sub { return $_[1] } } );   # Don't know
+class_has bnf               => ( is => 'ro', isa => Str, default => sub { $DATA } );
+class_has start_symbol      => ( is => 'ro', isa => Str, default => sub { '<common>' } );
+class_has gen_delims_symbol => ( is => 'ro', isa => Str, default => sub { '<gen delims>' } );
 
 with 'MarpaX::Role::Parameterized::ResourceIdentifier::Role::BNF';
 
@@ -50,3 +48,7 @@ __DATA__
 <fragment maybe> ::= '#' <fragment>
 <fragment maybe> ::=
 <fragment>       ::= [\s\S]*
+#
+# In its most general form, only [:#] are reserved
+#
+<gen delims>     ::= [:#]

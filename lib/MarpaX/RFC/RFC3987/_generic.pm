@@ -18,7 +18,6 @@ use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdenti
 
       package     => __PACKAGE__,
       BNF_package => 'MarpaX::RFC::RFC3987::_generic::BNF',
-      start       => '<IRI reference>',
       G1 => {
              '<IRI>'            => sub { $_[0]->iri               ($_[1])        },
              '<scheme>'         => sub { $_[0]->scheme            ($_[1])        },

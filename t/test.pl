@@ -9,6 +9,8 @@ use MarpaX::RFC::RFC3987::_generic;
 use Log::Any qw/$log/;
 use Log::Any::Adapter;
 use Log::Log4perl qw/:easy/;
+binmode STDOUT, ":encoding(utf8)";
+binmode STDERR, ":encoding(utf8)";
 
 # ----
 # Init
@@ -23,5 +25,7 @@ DEFAULT_LOG4PERL_CONF
 Log::Log4perl::init(\$defaultLog4perlConf);
 Log::Any::Adapter->set('Log4perl');
 
-print STDERR Dumper(MarpaX::RFC::RFC3987->new(shift || "http://test?voila1...\&voila2\#f"));
+my $iri = MarpaX::RFC::RFC3987->new(shift || "http://test?\x{5135}voila1...\&voila2\#f");
+print $iri->as_uri . "\n";
 # p(MarpaX::RFC::RFC3987->new("http://test?voila1...\&voila2\#f"));
+print $iri->escape($iri->opaque) . "\n";

@@ -13,7 +13,6 @@ our $DATA = do { local $/; <DATA> };
 
 class_has bnf               => ( is => 'ro', isa => Str, default => sub { $DATA } );
 class_has start_symbol      => ( is => 'ro', isa => Str, default => sub { '<IRI reference>' } );
-class_has gen_delims_symbol => ( is => 'ro', isa => Str, default => sub { '<gen delims>' } );
 
 with 'MarpaX::Role::Parameterized::ResourceIdentifier::Role::BNF';
 
@@ -66,7 +65,10 @@ __DATA__
 # disambiguate the syntax, we apply the "first-match-wins" algorithm:
 # If host matches the rule for IPv4address, then it should be
 # considered an IPv4 address literal and not a reg-name.
-
+#
+# Please note that <pct encoded> is revisited to catch a SEQUENCE of
+# encoded digits
+#
 <ihost>          ::= <IP literal>
                    | <IPv4address>                            rank => 1
                    | <ireg name>

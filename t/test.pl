@@ -25,7 +25,11 @@ DEFAULT_LOG4PERL_CONF
 Log::Log4perl::init(\$defaultLog4perlConf);
 Log::Any::Adapter->set('Log4perl');
 
-my $iri = MarpaX::RFC::RFC3987->new(shift || "http://test?\x{5135}voila1...\&voila2\#f");
+my $iri = MarpaX::RFC::RFC3987->new(shift ||
+                                    "http://\x{7D0D}\x{8C46}.example.org/%E2%80%AE" ||
+                                    "http://r&#xE9;sum&#xE9;.example.org" ||
+                                    "&&http://test?\x{5135}voila1...\&voila2\#f");
 print $iri->as_uri . "\n";
+ p($iri);
 # p(MarpaX::RFC::RFC3987->new("http://test?voila1...\&voila2\#f"));
 print $iri->escape($iri->opaque) . "\n";

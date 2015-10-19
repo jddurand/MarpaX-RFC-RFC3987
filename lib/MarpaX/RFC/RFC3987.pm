@@ -10,4 +10,6 @@ use parent 'MarpaX::RFC::RFC3987::_top';
 
 # AUTHORITY
 
+# References: https://tools.ietf.org/html/draft-ietf-iri-3987bis-13
+
 1;

@@ -11,9 +11,8 @@ use Types::Standard -all;
 
 our $DATA = do { local $/; <DATA> };
 
-class_has bnf               => ( is => 'ro', isa => Str, default => sub { $DATA } );
-class_has start_symbol      => ( is => 'ro', isa => Str, default => sub { '<common>' } );
-class_has gen_delims_symbol => ( is => 'ro', isa => Str, default => sub { '<gen delims>' } );
+class_has bnf               => ( is => 'ro', isa => Str, default   => sub { $DATA } );
+class_has start_symbol      => ( is => 'ro', isa => Str, default   => sub { '<common>' } );
 
 with 'MarpaX::Role::Parameterized::ResourceIdentifier::Role::BNF';
 

@@ -9,6 +9,7 @@ package MarpaX::RFC::RFC3987::_generic;
 
 # AUTHORITY
 
+use Net::IDN::Encode qw/domain_to_ascii/;
 use Moo;
 BEGIN {
   extends 'MarpaX::RFC::RFC3987::_common'; # So that _trigger_input is found in inheritance hierarchy
@@ -18,6 +19,8 @@ use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdenti
 
       package     => __PACKAGE__,
       BNF_package => 'MarpaX::RFC::RFC3987::_generic::BNF',
+      encoding    => 'UTF-8',
+      pct_encoded => '<pct encoded>',
       G1 => {
              '<IRI>'            => sub { $_[0]->iri               ($_[1])        },
              '<scheme>'         => sub { $_[0]->scheme            ($_[1])        },
@@ -39,6 +42,8 @@ use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdenti
              '<iport>'          => sub { $_[0]->port              ($_[1])        },
              '<IP literal>'     => sub { $_[0]->ip_literal        ($_[1])        },
              '<IPv6address>'    => sub { $_[0]->ipv6_address      ($_[1])        },
+             '<IPv4address>'    => sub { $_[0]->ipv4_address      ($_[1])        },
+             '<ireg name>'      => sub { $_[0]->reg_name          ($_[1])        },
              '<IPv6addrz>'      => sub { $_[0]->ipv6_addrz        ($_[1])        },
              '<IPvFuture>'      => sub { $_[0]->ipvfuture         ($_[1])        },
              '<ZoneID>'         => sub { $_[0]->zoneid            ($_[1])        },
@@ -46,5 +51,33 @@ use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdenti
              '<ifragment unit>' => sub { push(@{$_[0]->fragments}, $_[1]); $_[1] },
             }
      };
+use Try::Tiny;
+
+#
+# as_uri is specific to IRI implementation
+#
+around as_uri => sub {
+  my ($orig, $self) = (shift, shift);
+
+  my $as_uri = $self->$orig(@_);
+  my $scheme = $self->_struct_generic->scheme;
+  if ($self->regnameconvert && ! Undef->check($scheme)) {
+    try {
+      #
+      # This MAY fail
+      #
+      # We are creating an URI: AllowUnassigned must be set to TRUE
+      #
+      $scheme = domain_to_ascii($scheme, UseSTD3ASCIIRules => 1, AllowUnassigned => 1);
+      #
+      # Reconstruct a fake IRI
+      #
+    } catch {
+      if ($self->can('_logger')) {
+        $self->_logger->warnf('%s', $_);
+      }
+    }
+  }
+};
 
 1;

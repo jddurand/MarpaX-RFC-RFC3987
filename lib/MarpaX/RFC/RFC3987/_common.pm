@@ -14,6 +14,8 @@ use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdenti
   => {
       package           => __PACKAGE__,
       BNF_package       => 'MarpaX::RFC::RFC3987::_common::BNF',
+      encoding          => 'UTF-8',
+      pct_encoded       => '',
       G1 => {
              '<scheme>'   => sub { $_[0]->scheme  ($_[1]) },
              '<opaque>'   => sub { $_[0]->opaque  ($_[1]) },

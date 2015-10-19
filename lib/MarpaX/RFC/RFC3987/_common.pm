@@ -15,6 +15,9 @@ use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdenti
       package           => __PACKAGE__,
       BNF_package       => 'MarpaX::RFC::RFC3987::_common::BNF',
       G1 => {
+             #
+             # Note: here $_[0] is of type Common
+             #
              '<scheme>'   => sub { $_[0]->scheme  ($_[1]) },
              '<opaque>'   => sub { $_[0]->opaque  ($_[1]) },
              '<fragment>' => sub { $_[0]->fragment($_[1]) },

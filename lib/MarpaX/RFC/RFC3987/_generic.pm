@@ -9,6 +9,7 @@ package MarpaX::RFC::RFC3987::_generic;
 
 # AUTHORITY
 
+use Types::Standard -all;
 use Net::IDN::Encode qw/domain_to_ascii/;
 use Moo;
 BEGIN {
@@ -20,12 +21,21 @@ use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdenti
       package     => __PACKAGE__,
       BNF_package => 'MarpaX::RFC::RFC3987::_generic::BNF',
       G1 => {
-             '<IRI>'            => sub { $_[0]->iri               ($_[1])        },
+             #
+             # Note: here $_[0] is of type Generic
+             #
+             '<IRI>'            => sub {
+               $_[0]->iri($_[1]);
+               my $opaque = '';
+               $opaque .=       $_[0]->hier_part if Str->check($_[0]->hier_part);
+               $opaque .= '?' . $_[0]->query     if Str->check($_[0]->query);
+               $_[0]->opaque($opaque)
+             },
              '<scheme>'         => sub { $_[0]->scheme            ($_[1])        },
-             '<ihier_part>'     => sub { $_[0]->hier_part         ($_[1])        },
+             '<ihier part>'     => sub { $_[0]->hier_part         ($_[1])        },
              '<iquery>'         => sub { $_[0]->query             ($_[1])        },
-             '<ifragment>'      => sub { $_[0]->ifragment         ($_[1])        },
-             '<isegments>'      => sub { $_[0]->isegment          ($_[1])        },
+             '<ifragment>'      => sub { $_[0]->fragment          ($_[1])        },
+             '<isegments>'      => sub { $_[0]->segment           ($_[1])        },
              '<iauthority>'     => sub { $_[0]->authority         ($_[1])        },
              '<ipath>'          => sub { $_[0]->path              ($_[1])        },
              '<ipath abempty>'  => sub { $_[0]->path_abempty      ($_[1])        },
@@ -33,8 +43,14 @@ use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdenti
              '<ipath noscheme>' => sub { $_[0]->path_noscheme     ($_[1])        },
              '<ipath rootless>' => sub { $_[0]->path_rootless     ($_[1])        },
              '<ipath empty>'    => sub { $_[0]->path_empty        ($_[1])        },
-             '<irelative_ref>'  => sub { $_[0]->relative_ref      ($_[1])        },
-             '<irelative_part>' => sub { $_[0]->relative_part     ($_[1])        },
+             '<irelative ref>'  => sub {
+               $_[0]->relative_ref($_[1]);
+               my $opaque = '';
+               $opaque .=       $_[0]->relative_part if Str->check($_[0]->relative_part);
+               $opaque .= '?' . $_[0]->query         if Str->check($_[0]->query);
+               $_[0]->opaque($opaque)
+             },
+             '<irelative part>' => sub { $_[0]->relative_part     ($_[1])        },
              '<iuserinfo>'      => sub { $_[0]->userinfo          ($_[1])        },
              '<ihost>'          => sub { $_[0]->host              ($_[1])        },
              '<iport>'          => sub { $_[0]->port              ($_[1])        },

@@ -11,8 +11,10 @@ use Types::Standard -all;
 
 our $DATA = do { local $/; <DATA> };
 
-class_has bnf               => ( is => 'ro', isa => Str, default => sub { $DATA } );
-class_has start_symbol      => ( is => 'ro', isa => Str, default => sub { '<IRI reference>' } );
+class_has bnf               => ( is => 'ro', isa => Str,  default => sub {             $DATA } );
+class_has start_symbol      => ( is => 'ro', isa => Str,  default => sub { '<IRI reference>' } );
+class_has pct_encoded       => ( is => 'ro', isa => Str,  default => sub {   '<pct encoded>' } );
+class_has utf8_octets       => ( is => 'ro', isa => Bool, default => sub {               !!1 } );
 
 with 'MarpaX::Role::Parameterized::ResourceIdentifier::Role::BNF';
 
@@ -177,7 +179,9 @@ IPv4address      ::= <dec octet> '.' <dec octet> '.' <dec octet> '.' <dec octet>
 <ifragment unit> ::= <ipchar> | [/?]
 <ifragment>      ::= <ifragment unit>*
 
-<pct encoded>    ::= '%' HEXDIG HEXDIG
+<lexeme pct encoded unit> ~ '%' _HEXDIG _HEXDIG
+<lexeme pct encoded> ~ <lexeme pct encoded unit>+
+<pct encoded>      ::= <lexeme pct encoded>
 
 <iunreserved>    ::= ALPHA | DIGIT | [-._~] | <ucschar>
 
@@ -197,4 +201,5 @@ IPv4address      ::= <dec octet> '.' <dec octet> '.' <dec octet> '.' <dec octet>
 #
 ALPHA              ~ [A-Za-z]
 DIGIT              ~ [0-9]
-HEXDIG             ~ [0-9A-Fa-f]
+_HEXDIG            ~ [0-9A-Fa-f]
+HEXDIG             ~ _HEXDIG

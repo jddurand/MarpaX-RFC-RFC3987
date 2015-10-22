@@ -61,7 +61,9 @@ use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdenti
              '<IPv6addrz>'      => sub {        $_[0]->ipv6_addrz   ($_[1]) },
              '<IPvFuture>'      => sub {        $_[0]->ipvfuture    ($_[1]) },
              '<ZoneID>'         => sub {        $_[0]->zoneid       ($_[1]) },
-             '<isegment unit>'  => sub { push(@{$_[0]->segments},    $_[1]) },
+             '<isegment>'       => sub { push(@{$_[0]->segments},    $_[1]) },
+             '<isegment nz>'    => sub { push(@{$_[0]->segments},    $_[1]) },
+             '<isegment nz nc>' => sub { push(@{$_[0]->segments},    $_[1]) },
              '<ifragment unit>' => sub { push(@{$_[0]->fragments},   $_[1]) }
             }
      };

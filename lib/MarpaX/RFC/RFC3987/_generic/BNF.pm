@@ -171,7 +171,7 @@ IPv4address      ::= <dec octet> '.' <dec octet> '.' <dec octet> '.' <dec octet>
                    | '/'
 <ipath noscheme> ::= <isegment nz nc> <isegments>
 <ipath rootless> ::= <isegment nz> <isegments>
-<ipath empty>    ::= 
+<ipath empty>    ::=
 
 #
 # All possible segments are here

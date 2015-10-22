@@ -25,46 +25,46 @@ use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdenti
              # $_[0] is of type Generic
              #
              '<IRI>'            => sub {
-               $_[0]->iri($_[1]);
+               $_[0]->_set_iri($_[1]);
                my $opaque = '';
                $opaque .=       $_[0]->hier_part if Str->check($_[0]->hier_part);
                $opaque .= '?' . $_[0]->query     if Str->check($_[0]->query);
-               $_[0]->opaque($opaque)
+               $_[0]->_set_opaque($opaque)
              },
-             '<scheme>'         => sub {        $_[0]->scheme       ($_[1]) },
-             '<ihier part>'     => sub {        $_[0]->hier_part    ($_[1]) },
-             '<iquery>'         => sub {        $_[0]->query        ($_[1]) },
-             '<ifragment>'      => sub {        $_[0]->fragment     ($_[1]) },
-             '<isegments>'      => sub {        $_[0]->segment      ($_[1]) },
-             '<iauthority>'     => sub {        $_[0]->authority    ($_[1]) },
-             '<ipath>'          => sub {        $_[0]->path         ($_[1]) },
-             '<ipath abempty>'  => sub {        $_[0]->path_abempty ($_[1]) },
-             '<ipath absolute>' => sub {        $_[0]->path_absolute($_[1]) },
-             '<ipath noscheme>' => sub {        $_[0]->path_noscheme($_[1]) },
-             '<ipath rootless>' => sub {        $_[0]->path_rootless($_[1]) },
-             '<ipath empty>'    => sub {        $_[0]->path_empty   ($_[1]) },
+             '<scheme>'         => sub {        $_[0]->_set_scheme       ($_[1]) },
+             '<ihier part>'     => sub {        $_[0]->_set_hier_part    ($_[1]) },
+             '<iquery>'         => sub {        $_[0]->_set_query        ($_[1]) },
+             '<ifragment>'      => sub {        $_[0]->_set_fragment     ($_[1]) },
+             '<isegments>'      => sub {        $_[0]->_set_segment      ($_[1]) },
+             '<iauthority>'     => sub {        $_[0]->_set_authority    ($_[1]) },
+             '<ipath>'          => sub {        $_[0]->_set_path         ($_[1]) },
+             '<ipath abempty>'  => sub {        $_[0]->_set_path_abempty ($_[1]) },
+             '<ipath absolute>' => sub {        $_[0]->_set_path_absolute($_[1]) },
+             '<ipath noscheme>' => sub {        $_[0]->_set_path_noscheme($_[1]) },
+             '<ipath rootless>' => sub {        $_[0]->_set_path_rootless($_[1]) },
+             '<ipath empty>'    => sub {        $_[0]->_set_path_empty   ($_[1]) },
              '<irelative ref>'  => sub {
-               $_[0]->relative_ref($_[1]);
+               $_[0]->_set_relative_ref($_[1]);
                my $opaque = '';
                $opaque .=       $_[0]->relative_part if Str->check($_[0]->relative_part);
                $opaque .= '?' . $_[0]->query         if Str->check($_[0]->query);
-               $_[0]->opaque($opaque)
+               $_[0]->_set_opaque($opaque)
              },
-             '<irelative part>' => sub {        $_[0]->relative_part($_[1]) },
-             '<iuserinfo>'      => sub {        $_[0]->userinfo     ($_[1]) },
-             '<ihost>'          => sub {        $_[0]->host         ($_[1]) },
-             '<iport>'          => sub {        $_[0]->port         ($_[1]) },
-             '<IP literal>'     => sub {        $_[0]->ip_literal   ($_[1]) },
-             '<IPv6address>'    => sub {        $_[0]->ipv6_address ($_[1]) },
-             '<IPv4address>'    => sub {        $_[0]->ipv4_address ($_[1]) },
-             '<ireg name>'      => sub {        $_[0]->reg_name     ($_[1]) },
-             '<IPv6addrz>'      => sub {        $_[0]->ipv6_addrz   ($_[1]) },
-             '<IPvFuture>'      => sub {        $_[0]->ipvfuture    ($_[1]) },
-             '<ZoneID>'         => sub {        $_[0]->zoneid       ($_[1]) },
-             '<isegment>'       => sub { push(@{$_[0]->segments},    $_[1]) },
-             '<isegment nz>'    => sub { push(@{$_[0]->segments},    $_[1]) },
-             '<isegment nz nc>' => sub { push(@{$_[0]->segments},    $_[1]) },
-             '<ifragment unit>' => sub { push(@{$_[0]->fragments},   $_[1]) }
+             '<irelative part>' => sub {        $_[0]->_set_relative_part($_[1]) },
+             '<iuserinfo>'      => sub {        $_[0]->_set_userinfo     ($_[1]) },
+             '<ihost>'          => sub {        $_[0]->_set_host         ($_[1]) },
+             '<iport>'          => sub {        $_[0]->_set_port         ($_[1]) },
+             '<IP literal>'     => sub {        $_[0]->_set_ip_literal   ($_[1]) },
+             '<IPv6address>'    => sub {        $_[0]->_set_ipv6_address ($_[1]) },
+             '<IPv4address>'    => sub {        $_[0]->_set_ipv4_address ($_[1]) },
+             '<ireg name>'      => sub {        $_[0]->_set_reg_name     ($_[1]) },
+             '<IPv6addrz>'      => sub {        $_[0]->_set_ipv6_addrz   ($_[1]) },
+             '<IPvFuture>'      => sub {        $_[0]->_set_ipvfuture    ($_[1]) },
+             '<ZoneID>'         => sub {        $_[0]->_set_zoneid       ($_[1]) },
+             '<isegment>'       => sub { push(@{$_[0]->segments},         $_[1]) },
+             '<isegment nz>'    => sub { push(@{$_[0]->segments},         $_[1]) },
+             '<isegment nz nc>' => sub { push(@{$_[0]->segments},         $_[1]) },
+             '<ifragment unit>' => sub { push(@{$_[0]->fragments},        $_[1]) }
             }
      };
 use Try::Tiny;

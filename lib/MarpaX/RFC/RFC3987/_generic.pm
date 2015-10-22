@@ -64,7 +64,6 @@ use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdenti
              '<isegment>'       => sub { push(@{$_[0]->segments},         $_[1]) },
              '<isegment nz>'    => sub { push(@{$_[0]->segments},         $_[1]) },
              '<isegment nz nc>' => sub { push(@{$_[0]->segments},         $_[1]) },
-             '<ifragment unit>' => sub { push(@{$_[0]->fragments},        $_[1]) }
             }
      };
 use Try::Tiny;

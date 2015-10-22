@@ -16,11 +16,12 @@ use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdenti
       BNF_package       => 'MarpaX::RFC::RFC3987::_common::BNF',
       G1 => {
              #
-             # Note: here $_[0] is of type Common
+             # $_[0] and $_[1] are of type [ Common, Common ]
+             # Indice 0 is for escaped string, indice 1 is the unescaped string
              #
              '<scheme>'   => sub { $_[0]->scheme  ($_[1]) },
              '<opaque>'   => sub { $_[0]->opaque  ($_[1]) },
-             '<fragment>' => sub { $_[0]->fragment($_[1]) },
+             '<fragment>' => sub { $_[0]->fragment($_[1]) }
             }
      };
 

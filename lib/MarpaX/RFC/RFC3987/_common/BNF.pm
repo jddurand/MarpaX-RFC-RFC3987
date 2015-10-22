@@ -13,8 +13,16 @@ our $DATA = do { local $/; <DATA> };
 
 class_has bnf               => ( is => 'ro', isa => Str,   default   => sub {      $DATA } );
 class_has start_symbol      => ( is => 'ro', isa => Str,   default   => sub { '<common>' } );
+#
+# There is no decoding of %XX syntax in the common BNF
+#
 class_has pct_encoded       => ( is => 'ro', isa => Undef, default   => sub {      undef } );
 class_has utf8_octets       => ( is => 'ro', isa => Undef, default   => sub {      undef } );
+#
+# There is no escape/unescape mechanism in the common BNF
+#
+class_has reserved          => ( is => 'ro', isa => Undef, default   => sub {      undef } );
+class_has unreserved        => ( is => 'ro', isa => Undef, default   => sub {      undef } );
 
 with 'MarpaX::Role::Parameterized::ResourceIdentifier::Role::BNF';
 

@@ -76,7 +76,7 @@ around as_uri => sub {
 
   my $as_uri = $self->$orig(@_);
   my $scheme = $self->_struct_generic->scheme;
-  if ($self->regnameconvert && ! Undef->check($scheme)) {
+  if ($self->idn && ! Undef->check($scheme)) {
     try {
       #
       # This MAY fail

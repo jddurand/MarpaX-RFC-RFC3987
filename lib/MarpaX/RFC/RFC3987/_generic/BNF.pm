@@ -2,6 +2,7 @@ package MarpaX::RFC::RFC3987::_generic::BNF;
 use Moo;
 use MooX::ClassAttribute;
 use Types::Standard -all;
+use if $] < 5.16, 'Unicode::CaseFold';
 
 # ABSTRACT: Internationalized Resource Identifier (IRI): Generic Syntax - Marpa BNF
 
@@ -25,6 +26,19 @@ class_has pct_encoded       => ( is => 'ro', isa => Str,       default => sub { 
 class_has utf8_octets       => ( is => 'ro', isa => Bool,      default => sub {               !!1 } );
 class_has reserved          => ( is => 'ro', isa => RegexpRef, default => sub {         $RESERVED } );
 class_has unreserved        => ( is => 'ro', isa => RegexpRef, default => sub {       $UNRESERVED } );
+class_has normalizer        => ( is => 'ro', isa => CodeRef,
+                                 default =>
+                                 sub
+                                 {
+                                   sub {
+                                     my ($self, $lhs, $value) = @_;
+
+                                     if    ($lhs eq '<scheme>') { return lc($value) }
+                                     elsif ($lhs eq   '<host>') { return fc($value) }
+                                     else                       { return $value     }
+                                   }
+                                 }
+                               );
 
 with 'MarpaX::Role::Parameterized::ResourceIdentifier::Role::BNF';
 

@@ -23,6 +23,21 @@ class_has utf8_octets       => ( is => 'ro', isa => Undef, default   => sub {   
 #
 class_has reserved          => ( is => 'ro', isa => Undef, default   => sub {      undef } );
 class_has unreserved        => ( is => 'ro', isa => Undef, default   => sub {      undef } );
+#
+# Normalizer is reduced to its minimum: scheme
+#
+class_has normalizer        => ( is => 'ro', isa => CodeRef,
+                                 default =>
+                                 sub
+                                 {
+                                   sub {
+                                     my ($self, $lhs, $value) = @_;
+
+                                     if    ($lhs eq '<scheme>') { return lc($value) }
+                                     else                       { return $value     }
+                                   }
+                                 }
+                               );
 
 with 'MarpaX::Role::Parameterized::ResourceIdentifier::Role::BNF';
 

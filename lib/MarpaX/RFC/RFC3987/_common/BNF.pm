@@ -33,8 +33,8 @@ class_has normalizer        => ( is => 'ro', isa => CodeRef,
                                    sub {
                                      my ($self, $lhs, $value) = @_;
 
-                                     if    ($lhs eq '<scheme>') { return lc($value) }
-                                     else                       { return $value     }
+                                     return lc($value) if $lhs eq '<scheme>';
+                                     $value
                                    }
                                  }
                                );

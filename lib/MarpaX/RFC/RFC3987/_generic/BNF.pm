@@ -33,9 +33,9 @@ class_has normalizer        => ( is => 'ro', isa => CodeRef,
                                    sub {
                                      my ($self, $lhs, $value) = @_;
 
-                                     if    ($lhs eq '<scheme>') { return lc($value) }
-                                     elsif ($lhs eq   '<host>') { return fc($value) }
-                                     else                       { return $value     }
+                                     return lc($value) if $lhs eq '<scheme>';
+                                     return fc($value) if $lhs eq '<ihost>';
+                                     $value
                                    }
                                  }
                                );

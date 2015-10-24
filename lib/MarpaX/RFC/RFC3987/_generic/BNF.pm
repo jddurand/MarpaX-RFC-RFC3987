@@ -33,6 +33,7 @@ class_has normalizer        => ( is => 'ro', isa => CodeRef,
                                    sub {
                                      my ($self, $lhs, $value) = @_;
 
+                                     return uc($value) if $lhs eq '<pct encoded>';
                                      return lc($value) if $lhs eq '<scheme>';
                                      return fc($value) if $lhs eq '<ihost>';
                                      $value

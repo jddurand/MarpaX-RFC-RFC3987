@@ -22,7 +22,16 @@ use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdenti
              '<scheme>'   => sub { $_[0]->_set_scheme  ($_[1]) },
              '<opaque>'   => sub { $_[0]->_set_opaque  ($_[1]) },
              '<fragment>' => sub { $_[0]->_set_fragment($_[1]) }
-            }
+            },
+      normalizer => sub {
+        my ($self, $lhs, $value) = @_;
+        #
+        # Case normalization
+        #
+        $value = lc($value) if $lhs eq '<scheme>';
+
+        $value
+      }
      };
 
 #

@@ -11,9 +11,20 @@ package MarpaX::RFC::RFC3987::_generic;
 
 use Types::Standard -all;
 use Net::IDN::Encode qw/domain_to_ascii/;
+use if $] < 5.16, 'Unicode::CaseFold';
 use Moo;
 BEGIN {
-  extends 'MarpaX::RFC::RFC3987::_common'; # So that _trigger_input is found in inheritance hierarchy
+  #
+  # So that _trigger_input is found in inheritance hierarchy
+  #
+  extends 'MarpaX::RFC::RFC3987::_common';
+}
+BEGIN {
+  #
+  # Because parameterized role is applied at compile time and requires these attributes
+  #
+  has idn      => ( is => 'rw', isa => Bool, default => sub { !!0 } ); # Is reg-name an IDN
+  has nfc      => ( is => 'rw', isa => Bool, default => sub { !!1 } ); # Is input normalized
 }
 use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdentifier::Role::_generic'
   => {
@@ -64,7 +75,24 @@ use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdenti
              '<isegment>'       => sub { push(@{$_[0]->segments},         $_[1]) },
              '<isegment nz>'    => sub { push(@{$_[0]->segments},         $_[1]) },
              '<isegment nz nc>' => sub { push(@{$_[0]->segments},         $_[1]) },
-            }
+            },
+      normalizer => sub {
+        my ($self, $lhs, $value) = @_;
+        #
+        # Case normalization
+        #
+        $value = uc($value) if $lhs eq '<pct encoded>';
+        $value = lc($value) if $lhs eq '<scheme>';
+        $value = fc($value) if $lhs eq '<ihost>';
+        #
+        # Character normalization
+        # - We assume this is already pre-character normalized
+        #   unless the user said it is not
+        #
+        # Nornamized value
+        #
+        $value
+      }
      };
 use Try::Tiny;
 

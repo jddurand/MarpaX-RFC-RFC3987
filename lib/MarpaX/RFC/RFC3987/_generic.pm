@@ -89,8 +89,9 @@ use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdenti
         #
         # Character normalization
         # We assume this is already pre-character normalized unless the user said it is not
+        # This kind of normalization can be done at the very last step
         #
-        $value = normalize($self->character_normalization_strategy, $value) if (! $self->is_character_normalized);
+        $value = normalize($self->character_normalization_strategy, $value) if ($lhs eq '<IRI reference>' && ! $self->is_character_normalized);
         #
         # Normalized value
         #

@@ -23,9 +23,11 @@ BEGIN {
   #
   # Because parameterized role is applied at compile time and requires these attributes
   #
-  has idn      => ( is => 'rw', isa => Bool, default => sub { !!0 } ); # Is reg-name an IDN
-  has nfc      => ( is => 'rw', isa => Bool, default => sub { !!1 } ); # Is input normalized
+  has idn                              => ( is => 'rw', isa => Bool,                                default => sub {    !!0 } ); # Is reg-name an IDN
+  has is_character_normalized          => ( is => 'rw', isa => Bool,                                default => sub {    !!0 } ); # Is input character-normalized ?
+  has character_normalization_strategy => ( is => 'rw', isa => Enum[qw/NFC NFD NFKC NFKD FCD FCC/], default => sub { 'NFKC' } ); # Character normalization default stragegy
 }
+use Unicode::Normalize qw/normalize/;
 use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdentifier::Role::_generic'
   => {
 
@@ -86,10 +88,11 @@ use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdenti
         $value = fc($value) if $lhs eq '<ihost>';
         #
         # Character normalization
-        # - We assume this is already pre-character normalized
-        #   unless the user said it is not
+        # We assume this is already pre-character normalized unless the user said it is not
         #
-        # Nornamized value
+        $value = normalize($self->character_normalization_strategy, $value) if (! $self->is_character_normalized);
+        #
+        # Normalized value
         #
         $value
       }

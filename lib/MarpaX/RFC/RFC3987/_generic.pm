@@ -14,6 +14,7 @@ use Net::IDN::Encode qw/domain_to_ascii/;
 use Moo;
 use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdentifier'
   => {
+      whoami      => __PACKAGE__,
       type        => 'Generic',
       bnf_package => 'MarpaX::RFC::RFC3987::_generic::BNF',
       normalizer  => sub {}
@@ -23,7 +24,7 @@ use Try::Tiny;
 #
 # as_uri is specific to IRI implementation
 #
-around as_uri => sub {
+sub as_uri => sub {
   my ($orig, $self) = (shift, shift);
 
   my $as_uri = $self->$orig(@_);

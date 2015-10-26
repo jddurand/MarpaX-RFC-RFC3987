@@ -12,6 +12,7 @@ package MarpaX::RFC::RFC3987::_common;
 use Moo;
 use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdentifier'
   => {
+      whoami      => __PACKAGE__,
       type        => 'Common',
       bnf_package => 'MarpaX::RFC::RFC3987::_common::BNF',
       normalizer  => sub {}

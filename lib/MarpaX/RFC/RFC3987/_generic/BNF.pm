@@ -1,4 +1,5 @@
 package MarpaX::RFC::RFC3987::_generic::BNF;
+use Marpa::R2;
 use Moo;
 use MooX::ClassAttribute;
 use Types::Standard -all;
@@ -9,28 +10,64 @@ use Types::Standard -all;
 
 # AUTHORITY
 
-our $DATA = do { local $/; <DATA> };
-
-our $ALPHA = qr/(?:[A-Za-z])/;
-our $DIGIT = qr/(?:[0-9])/;
+our $ALPHA   = qr/(?:[A-Za-z])/;
+our $DIGIT   = qr/(?:[0-9])/;
 our $UCSCHAR = qr/(?:[\x{A0}-\x{D7FF}\x{F900}-\x{FDCF}\x{FDF0}-\x{FFEF}\x{10000}-\x{1FFFD}\x{20000}-\x{2FFFD}\x{30000}-\x{3FFFD}\x{40000}-\x{4FFFD}\x{50000}-\x{5FFFD}\x{60000}-\x{6FFFD}\x{70000}-\x{7FFFD}\x{80000}-\x{8FFFD}\x{90000}-\x{9FFFD}\x{A0000}-\x{AFFFD}\x{B0000}-\x{BFFFD}\x{C0000}-\x{CFFFD}\x{D0000}-\x{DFFFD}\x{E1000}-\x{EFFFD}])/;
 our $GEN_DELIMS = qr/(?:[\:\/\?\[\]\@\#])/;
 our $SUB_DELIMS = qr/(?:[\!\$\&\'\(\)\*\+\,\;\=])/;
-our $RESERVED = qr/(?:$GEN_DELIMS|$SUB_DELIMS)/;
+
+our $DATA       = do { local $/; <DATA> };
+our $RESERVED   = qr/(?:$GEN_DELIMS|$SUB_DELIMS)/;
 our $UNRESERVED = qr/(?:$ALPHA|$DIGIT|[\-._~]|$UCSCHAR)/;
 
-class_has bnf               => ( is => 'ro', isa => Str,       default => sub {             $DATA } );
-class_has start_symbol      => ( is => 'ro', isa => Str,       default => sub { '<IRI reference>' } );
-class_has pct_encoded       => ( is => 'ro', isa => Str,       default => sub {   '<pct encoded>' } );
-class_has utf8_octets       => ( is => 'ro', isa => Bool,      default => sub {               !!1 } );
-class_has reserved          => ( is => 'ro', isa => RegexpRef, default => sub {         $RESERVED } );
-class_has unreserved        => ( is => 'ro', isa => RegexpRef, default => sub {       $UNRESERVED } );
+class_has action_name => ( is => 'ro', isa => Str,          default => sub { '_action' } );
+class_has grammar     => ( is => 'ro', isa => ScalarRef,    default => sub { Marpa::R2::Scanless::G->new({source => \$DATA}) } );
+class_has bnf         => ( is => 'ro', isa => ScalarRef,    default => sub {           $DATA } );
+class_has reserved    => ( is => 'ro', isa => RegexpRef,    default => sub {       $RESERVED } );
+class_has unreserved  => ( is => 'ro', isa => RegexpRef,    default => sub {     $UNRESERVED } );
+class_has pct_encoded => ( is => 'ro', isa => Str,          default => sub { '<pct encoded>' } );
+class_has is_utf8     => ( is => 'ro', isa => Bool,         default => sub {             !!1 } );
+class_has mapping     => ( is => 'ro', isa => HashRef[Str], default => sub {
+                             {
+                               '<IRI reference>'  => 'output',
+                               '<scheme>'         => 'scheme',
+                               '<ihier part>'     => 'hier_part',
+                               '<iquery>'         => 'query',
+                               '<ifragment>'      => 'fragment',
+                               '<isegments>'      => 'segment',
+                               '<iauthority>'     => 'authority',
+                               '<ipath>'          => 'path',
+                               '<ipath abempty>'  => 'path_abempty',
+                               '<ipath absolute>' => 'path_absolute',
+                               '<ipath noscheme>' => 'path_noscheme',
+                               '<ipath rootless>' => 'path_rootless',
+                               '<ipath empty>'    => 'path_empty',
+                               '<irelative ref>'  => 'relative_ref',
+                               '<irelative part>' => 'relative_part',
+                               '<iuserinfo>'      => 'userinfo',
+                               '<ihost>'          => 'host',
+                               '<iport>'          => 'port',
+                               '<IP literal>'     => 'ip_literal',
+                               '<IPv6address>'    => 'ipv6_address',
+                               '<IPv4address>'    => 'ipv4_address',
+                               '<ireg name>'      => 'reg_name',
+                               '<IPv6addrz>'      => 'ipv6_addrz',
+                               '<IPvFuture>'      => 'ipvfuture',
+                               '<ZoneID>'         => 'zoneid',
+                               '<isegment>'       => 'segments',
+                               '<isegment nz>'    => 'segments',
+                               '<isegment nz nc>' => 'segments',
+                             }
+                           }
+                         );
 
 with 'MarpaX::Role::Parameterized::ResourceIdentifier::Role::BNF';
 
 1;
-
 __DATA__
+inaccessible is ok by default
+:default ::= action => _action
+:start ::= <IRI reference>
 <IRI>         ::= <scheme> ':' <ihier part> '?' <iquery> '#' <ifragment>
                 | <scheme> ':' <ihier part> '?' <iquery>
                 | <scheme> ':' <ihier part>              '#' <ifragment>

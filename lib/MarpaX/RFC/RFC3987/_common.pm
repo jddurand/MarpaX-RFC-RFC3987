@@ -10,28 +10,11 @@ package MarpaX::RFC::RFC3987::_common;
 # AUTHORITY
 
 use Moo;
-use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdentifier::Role::_common'
+use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdentifier'
   => {
-      package           => __PACKAGE__,
-      BNF_package       => 'MarpaX::RFC::RFC3987::_common::BNF',
-      G1 => {
-             #
-             # $_[0] and $_[1] are of type [ Common, Common ]
-             # Indice 0 is for escaped string, indice 1 is the unescaped string
-             #
-             '<scheme>'   => sub { $_[0]->_set_scheme  ($_[1]) },
-             '<opaque>'   => sub { $_[0]->_set_opaque  ($_[1]) },
-             '<fragment>' => sub { $_[0]->_set_fragment($_[1]) }
-            },
-      normalizer => sub {
-        my ($self, $lhs, $value) = @_;
-        #
-        # Case normalization
-        #
-        $value = lc($value) if $lhs eq '<scheme>';
-
-        $value
-      }
+      type        => 'Common',
+      bnf_package => 'MarpaX::RFC::RFC3987::_common::BNF',
+      normalizer  => sub {}
      };
 
 #

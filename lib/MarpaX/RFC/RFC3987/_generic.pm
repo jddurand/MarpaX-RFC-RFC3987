@@ -21,10 +21,12 @@ use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdenti
      };
 use Try::Tiny;
 
+extends 'MarpaX::RFC::RFC3987::_common';
+
 #
 # as_uri is specific to IRI implementation
 #
-sub as_uri => sub {
+around as_uri => sub {
   my ($orig, $self) = (shift, shift);
 
   my $as_uri = $self->$orig(@_);

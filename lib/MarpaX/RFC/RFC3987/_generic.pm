@@ -1,17 +1,18 @@
 use strict;
 use warnings FATAL => 'all';
 
-package MarpaX::RFC::RFC3987::_generic;
-
 # ABSTRACT: Internationalized Resource Identifier (IRI): Generic syntax implementation
 
 # VERSION
 
 # AUTHORITY
 
+package MarpaX::RFC::RFC3987::_generic;
+use Moo;
+extends 'MarpaX::RFC::RFC3987::_common';
+
 use Types::Standard -all;
 use Net::IDN::Encode qw/domain_to_ascii/;
-use Moo;
 use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdentifier'
   => {
       whoami      => __PACKAGE__,
@@ -20,8 +21,6 @@ use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdenti
       normalizer  => sub {}
      };
 use Try::Tiny;
-
-extends 'MarpaX::RFC::RFC3987::_common';
 
 #
 # as_uri is specific to IRI implementation

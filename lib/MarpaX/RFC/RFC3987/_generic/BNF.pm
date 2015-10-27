@@ -31,6 +31,7 @@ class_has mapping     => ( is => 'ro', isa => HashRef[Str], default => sub {
                              {
                                '<IRI reference>'  => 'output',
                                '<scheme>'         => 'scheme',
+                               '<opaque>'         => 'opaque',
                                '<ihier part>'     => 'hier_part',
                                '<iquery>'         => 'query',
                                '<ifragment>'      => 'fragment',
@@ -68,10 +69,14 @@ __DATA__
 inaccessible is ok by default
 :default ::= action => _action
 :start ::= <IRI reference>
-<IRI>         ::= <scheme> ':' <ihier part> '?' <iquery> '#' <ifragment>
-                | <scheme> ':' <ihier part> '?' <iquery>
-                | <scheme> ':' <ihier part>              '#' <ifragment>
-                | <scheme> ':' <ihier part>
+
+<opaque>  ::= <ihier part>     '?' <iquery>
+            | <ihier part>
+            | <irelative part> '?' <iquery>
+            | <irelative part>
+
+<IRI>         ::= <scheme> ':' <opaque> '#' <ifragment>
+                | <scheme> ':' <opaque>
 
 <ihier part>     ::= '//' <iauthority> <ipath abempty>
                    | <ipath absolute>
@@ -81,13 +86,10 @@ inaccessible is ok by default
 <IRI reference> ::= <IRI>
                   | <irelative ref>
 
-<absolute IRI>  ::= <scheme> ':' <ihier part> '?' <iquery>
-                  | <scheme> ':' <ihier part>
+<absolute IRI>  ::= <scheme> ':' <opaque>
 
-<irelative ref>  ::= <irelative part> '?' <iquery> '#' <ifragment>
-                   | <irelative part> '?' <iquery>
-                   | <irelative part>              '#' <ifragment>
-                   | <irelative part>
+<irelative ref>  ::= <opaque> '#' <ifragment>
+                   | <opaque>
 
 <irelative part> ::= '//' <iauthority> <ipath abempty>
                    | <ipath absolute>

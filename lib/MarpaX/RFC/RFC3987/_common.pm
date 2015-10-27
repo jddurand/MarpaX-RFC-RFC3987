@@ -1,14 +1,13 @@
 use strict;
 use warnings FATAL => 'all';
 
-package MarpaX::RFC::RFC3987::_common;
-
 # ABSTRACT: Internationalized Resource Identifier (IRI): Common syntax implementation
 
 # VERSION
 
 # AUTHORITY
 
+package MarpaX::RFC::RFC3987::_common;
 use Moo;
 use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdentifier'
   => {

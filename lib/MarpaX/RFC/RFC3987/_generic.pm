@@ -11,6 +11,8 @@ package MarpaX::RFC::RFC3987::_generic;
 use Moo;
 extends 'MarpaX::RFC::RFC3987::_common';
 
+use if $] < 5.016, 'Unicode::CaseFold';
+use Unicode::CaseFold;
 use Try::Tiny;
 use Types::Standard -all;
 use Net::IDN::Encode qw/domain_to_ascii/;
@@ -19,9 +21,19 @@ use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdenti
       whoami      => __PACKAGE__,
       type        => 'Generic',
       bnf_package => 'MarpaX::RFC::RFC3987::_generic::BNF',
-      normalizer  => sub {}
+      normalizer  => sub {
+        my ($self, $lhs, $value) = @_;
+
+        $value =         lc($value) if ($lhs eq '<scheme>');
+        $value = $self->_fc($value) if ($lhs eq '<ihost>');
+        $value
+      }
      };
 
+sub _fc {
+  my ($self, $value) = @_;
+  $] < 5.016 ? fc($value) : CORE::fc($value)
+}
 
 #
 # as_uri is specific to IRI implementation

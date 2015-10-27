@@ -31,7 +31,8 @@ class_has mapping     => ( is => 'ro', isa => HashRef[Str], default => sub {
                              {
                                '<IRI reference>'  => 'output',
                                '<scheme>'         => 'scheme',
-                               '<opaque>'         => 'opaque',
+                               '<IRI opaque>'     => 'opaque',
+                               '<rel opaque>'     => 'opaque',
                                '<ihier part>'     => 'hier_part',
                                '<iquery>'         => 'query',
                                '<ifragment>'      => 'fragment',
@@ -70,13 +71,14 @@ inaccessible is ok by default
 :default ::= action => MarpaX::RFC::RFC3987::_generic::BNF::_action
 :start ::= <IRI reference>
 
-<opaque>  ::= <ihier part>     '?' <iquery>
-            | <ihier part>
-            | <irelative part> '?' <iquery>
-            | <irelative part>
+<rel opaque>  ::= <irelative part> '?' <iquery>
+                | <irelative part>
 
-<IRI>         ::= <scheme> ':' <opaque> '#' <ifragment>
-                | <scheme> ':' <opaque>
+<IRI opaque>  ::= <ihier part>     '?' <iquery>
+                | <ihier part>
+
+<IRI>         ::= <scheme> ':' <IRI opaque> '#' <ifragment>
+                | <scheme> ':' <IRI opaque>
 
 <ihier part>     ::= '//' <iauthority> <ipath abempty>
                    | <ipath absolute>
@@ -86,10 +88,10 @@ inaccessible is ok by default
 <IRI reference> ::= <IRI>
                   | <irelative ref>
 
-<absolute IRI>  ::= <scheme> ':' <opaque>
+<absolute IRI>  ::= <scheme> ':' <IRI opaque>
 
-<irelative ref>  ::= <opaque> '#' <ifragment>
-                   | <opaque>
+<irelative ref>  ::= <rel opaque> '#' <ifragment>
+                   | <rel opaque>
 
 <irelative part> ::= '//' <iauthority> <ipath abempty>
                    | <ipath absolute>

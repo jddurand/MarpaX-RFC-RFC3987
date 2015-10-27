@@ -27,9 +27,9 @@ Log::Any::Adapter->set('Log4perl');
 
 my $iri = MarpaX::RFC::RFC3987->new(shift
                                     ||
-                                    "http://www.example.org/re\x{301}sume\x{301}.html"
-                                    ||
                                     "HTTp://eXAMPLe.com?\x{5135}voila1...\&voila2\#~%eF%BF%Bdf"
+                                    ||
+                                    "http://www.example.org/re\x{301}sume\x{301}.html"
                                     ||
                                     "http://\x{7D0D}\x{8C46}.example.org/%41%E2%89%A2%CE%91%2E%ED%95%9C%EA%B5%AD%EC%96%B4-%E6%97%A5%E6%9C%AC%E8%AA%9E-%EF%BB%BF%F0%A3%8E%B4"
                                     ||

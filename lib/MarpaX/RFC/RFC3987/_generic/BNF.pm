@@ -67,7 +67,7 @@ with 'MarpaX::Role::Parameterized::ResourceIdentifier::BNF';
 1;
 __DATA__
 inaccessible is ok by default
-:default ::= action => _action
+:default ::= action => MarpaX::RFC::RFC3987::_generic::BNF::_action
 :start ::= <IRI reference>
 
 <opaque>  ::= <ihier part>     '?' <iquery>

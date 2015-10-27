@@ -8,20 +8,19 @@ use warnings FATAL => 'all';
 # AUTHORITY
 
 package MarpaX::RFC::RFC3987::_common;
-use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdentifier::BUILDARGS'
-  => {
-      whoami          => __PACKAGE__,
-      type            => 'NotTop',
-      second_argument => 'base',
-     };
+use Moo;
 use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdentifier'
   => {
       whoami      => __PACKAGE__,
       type        => 'Common',
       bnf_package => 'MarpaX::RFC::RFC3987::_common::BNF',
-      normalizer  => sub {}
+      normalizer  => sub {
+        my ($self, $lhs, $value) = @_;
+
+        $value = lc($value) if ($lhs eq '<scheme>');
+        $value
+      }
      };
-use Moo;
 
 #
 # as_uri is specific to the IRI implementation

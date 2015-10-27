@@ -35,7 +35,7 @@ with 'MarpaX::Role::Parameterized::ResourceIdentifier::BNF';
 
 __DATA__
 inaccessible is ok by default
-:default ::= action => _action
+:default ::= action => MarpaX::RFC::RFC3987::_common::BNF::_action
 :start ::= <common>
 #
 # Official for generic syntax is

@@ -8,11 +8,14 @@ use warnings FATAL => 'all';
 # AUTHORITY
 
 package MarpaX::RFC::RFC3987::_generic;
-use Moo;
-extends 'MarpaX::RFC::RFC3987::_common';
-
 use Types::Standard -all;
 use Net::IDN::Encode qw/domain_to_ascii/;
+use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdentifier::BUILDARGS'
+  => {
+      whoami          => __PACKAGE__,
+      type            => 'NotTop',
+      second_argument => 'base',
+     };
 use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdentifier'
   => {
       whoami      => __PACKAGE__,
@@ -20,12 +23,13 @@ use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdenti
       bnf_package => 'MarpaX::RFC::RFC3987::_generic::BNF',
       normalizer  => sub {}
      };
+use Moo;
 use Try::Tiny;
 
 #
 # as_uri is specific to IRI implementation
 #
-around as_uri => sub {
+sub as_uri {
   my ($orig, $self) = (shift, shift);
 
   my $as_uri = $self->$orig(@_);

@@ -62,7 +62,7 @@ class_has mapping     => ( is => 'ro', isa => HashRef[Str], default => sub {
                            }
                          );
 
-with 'MarpaX::Role::Parameterized::ResourceIdentifier::Role::BNF';
+with 'MarpaX::Role::Parameterized::ResourceIdentifier::BNF';
 
 1;
 __DATA__

@@ -8,7 +8,12 @@ use warnings FATAL => 'all';
 # AUTHORITY
 
 package MarpaX::RFC::RFC3987::_common;
-use Moo;
+use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdentifier::BUILDARGS'
+  => {
+      whoami          => __PACKAGE__,
+      type            => 'NotTop',
+      second_argument => 'base',
+     };
 use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdentifier'
   => {
       whoami      => __PACKAGE__,
@@ -16,6 +21,7 @@ use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdenti
       bnf_package => 'MarpaX::RFC::RFC3987::_common::BNF',
       normalizer  => sub {}
      };
+use Moo;
 
 #
 # as_uri is specific to the IRI implementation

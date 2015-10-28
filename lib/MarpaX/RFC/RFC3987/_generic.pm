@@ -9,8 +9,7 @@ use warnings FATAL => 'all';
 
 package MarpaX::RFC::RFC3987::_generic;
 use Moo;
-extends 'MarpaX::RFC::RFC3987::_common';
-
+BEGIN { extends 'MarpaX::RFC::RFC3987::_common' }
 use if $] < 5.016, 'Unicode::CaseFold';
 use Unicode::CaseFold;
 use Try::Tiny;

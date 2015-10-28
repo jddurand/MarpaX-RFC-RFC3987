@@ -32,7 +32,7 @@ use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdenti
      };
 
 has is_character_normalized          => ( is => 'ro', isa => Bool, default => sub { !!1 } );
-has character_normalization_strategy => ( is => 'ro', isa => Enum[qw/NFD NFC NFKD NFKC FCD FCC/], default => sub { 'NFKC' } );
+has character_normalization_strategy => ( is => 'ro', isa => Enum[qw/NFD NFC NFKD NFKC FCD FCC/], default => sub { 'NFC' } );
 
 sub _fc {
   my ($self, $value) = @_;
@@ -46,7 +46,7 @@ around as_uri => sub {
   my ($orig, $self) = (shift, shift);
 
   my $as_uri = $self->$orig(@_);
-  my $scheme = $self->_struct_generic->scheme;
+  my $scheme = $self->_scheme;
   if ($self->idn && ! Undef->check($scheme)) {
     try {
       #

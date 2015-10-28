@@ -3,6 +3,7 @@ use strict;
 use warnings FATAL => 'all';
 use Data::Dumper;
 use Data::Printer;
+use Encode;
 use MarpaX::RFC::RFC3987;
 use MarpaX::RFC::RFC3987::_common;
 use MarpaX::RFC::RFC3987::_generic;
@@ -16,7 +17,7 @@ binmode STDERR, ":encoding(utf8)";
 # Init
 # ----
 my $defaultLog4perlConf = <<DEFAULT_LOG4PERL_CONF;
-log4perl.rootLogger              = TRACE, Screen
+log4perl.rootLogger              = DEBUG, Screen
 log4perl.appender.Screen         = Log::Log4perl::Appender::Screen
 log4perl.appender.Screen.stderr  = 0
 log4perl.appender.Screen.layout  = PatternLayout
@@ -27,7 +28,7 @@ Log::Any::Adapter->set('Log4perl');
 
 my $iri = MarpaX::RFC::RFC3987->new(shift
                                     ||
-                                    { input => "http://www.example.org/re\x{301}sume\x{301}.html", character_normalization_strategy => 'NFKC', is_character_normalized => 0 }
+                                    { octets => "http://www.example.org/resume.html", encoding => 'euc-jp', character_normalization_strategy => 'NFKC', is_character_normalized => 0, decode_strategy => Encode::FB_DEFAULT }
                                     ||
                                     "HTTp://eXAMPLe.com?\x{5135}voila1...\&voila2\#~%eF%BF%Bdf"
                                     ||
@@ -37,9 +38,10 @@ my $iri = MarpaX::RFC::RFC3987->new(shift
                                     ||
                                     "/foo/bar"
                                    );
-exit;
-use Data::Dumper;
 print Dumper($iri);
+use Data::Dumper;
+print Dumper($iri->as_uri);
+exit;
 # p(MarpaX::RFC::RFC3987->new("http://test?voila1...\&voila2\#f"));
 print $iri->_iri . "\n";
 print $iri->_iri(1) . "\n";

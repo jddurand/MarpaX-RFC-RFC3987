@@ -27,7 +27,7 @@ Log::Any::Adapter->set('Log4perl');
 
 my $iri = MarpaX::RFC::RFC3987->new(shift
                                     ||
-                                    { input => "http://www.example.org/re\x{301}sume\x{301}.html", is_character_normalized => 0 }
+                                    { input => "http://www.example.org/re\x{301}sume\x{301}.html", character_normalization_strategy => 'NFKC', is_character_normalized => 0 }
                                     ||
                                     "HTTp://eXAMPLe.com?\x{5135}voila1...\&voila2\#~%eF%BF%Bdf"
                                     ||

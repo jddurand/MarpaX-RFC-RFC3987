@@ -26,7 +26,6 @@ use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdenti
 
         $value =         lc($value)                                         if ($lhs eq '<scheme>');
         $value = $self->_fc($value)                                         if ($lhs eq '<ihost>');
-        $value = $self->_fc($value)                                         if ($lhs eq '<ihost>');
         $value = normalize($self->character_normalization_strategy, $value) if ($lhs eq '<IRI reference>' && ! $self->is_character_normalized);
         $value
       }

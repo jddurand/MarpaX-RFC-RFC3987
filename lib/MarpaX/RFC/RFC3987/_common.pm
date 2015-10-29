@@ -16,9 +16,15 @@ use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdenti
       type        => 'Common',
       bnf_package => 'MarpaX::RFC::RFC3987::_common::BNF',
       normalizer  => sub {
-        my ($self, $lhs, $value) = @_;
+        my ($self, $lhs, $field, $value) = @_;
+        # ------------------
+        # Case normalization
+        # ------------------
+        #
+        # scheme is always normalized to lowercase, contains only US-ASCII characters per def
+        #
+        $value = lc($value) if ($field eq '<scheme>');
 
-        $value = lc($value) if ($lhs eq '<scheme>');
         $value
       }
      };

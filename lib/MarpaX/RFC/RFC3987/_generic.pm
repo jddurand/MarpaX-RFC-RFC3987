@@ -17,7 +17,6 @@ use Try::Tiny;
 use Types::Standard -all;
 use Types::Encodings qw/Bytes/;
 use Net::IDN::Encode qw/domain_to_ascii/;
-use Net::IDN::IDNA2003 qw/idna2003_to_ascii/;
 use Net::IDN::Nameprep qw/nameprep/;
 use MooX::HandlesVia;
 use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdentifier'
@@ -57,7 +56,7 @@ use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdenti
         # --------------------------
         # Scheme based normalization
         # --------------------------
-        $value = nameprep(idna2003_to_ascii($value, UseSTD3ASCIIRules => 1, AllowUnassigned => 1), AllowUnassigned => 0) if ($self->exists_idn($field) && $self->get_idn($field));
+        $value = nameprep(domain_to_ascii($value, UseSTD3ASCIIRules => 1, AllowUnassigned => 1), AllowUnassigned => 0) if ($self->exists_idn($field) && $self->get_idn($field));
 
         $value
       }

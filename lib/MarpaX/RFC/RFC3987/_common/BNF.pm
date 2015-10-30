@@ -11,12 +11,17 @@ use Types::Standard -all;
 # AUTHORITY
 
 our $DATA = do { local $/; <DATA> };
+#
+# In the most general case, only ':' and '#' are reserved, anything else is unreserved
+#
+our $RESERVED   = qr/[:#]/;
+our $UNRESERVED = qr/[^:#]/;
 
 class_has action_name => ( is => 'ro', isa => Str,          default => sub { '_action' } );
 class_has grammar     => ( is => 'ro', isa => ScalarRef,    default => sub { Marpa::R2::Scanless::G->new({source => \$DATA}) } );
 class_has bnf         => ( is => 'ro', isa => ScalarRef,    default => sub {           $DATA } );
-class_has reserved    => ( is => 'ro', isa => Undef,        default => sub {           undef } );
-class_has unreserved  => ( is => 'ro', isa => Undef,        default => sub {           undef } );
+class_has reserved    => ( is => 'ro', isa => Undef,        default => sub {       $RESERVED } );
+class_has unreserved  => ( is => 'ro', isa => Undef,        default => sub {     $UNRESERVED } );
 class_has pct_encoded => ( is => 'ro', isa => Undef,        default => sub {           undef } );
 class_has is_utf8     => ( is => 'ro', isa => Bool,         default => sub {             !!0 } );
 class_has mapping     => ( is => 'ro', isa => HashRef[Str], default => sub {

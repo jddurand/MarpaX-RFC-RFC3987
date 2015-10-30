@@ -15,7 +15,7 @@ binmode STDERR, ":encoding(utf8)";
 # Init
 # ----
 my $defaultLog4perlConf = <<DEFAULT_LOG4PERL_CONF;
-log4perl.rootLogger              = TRACE, Screen
+log4perl.rootLogger              = DEBUG, Screen
 log4perl.appender.Screen         = Log::Log4perl::Appender::Screen
 log4perl.appender.Screen.stderr  = 0
 log4perl.appender.Screen.layout  = PatternLayout
@@ -26,7 +26,9 @@ Log::Any::Adapter->set('Log4perl');
 
 my $iri = MarpaX::RFC::RFC3987->new(shift
                                     ||
-                                    "HTTp://www.exAMPLe.org/re\x{301}sume\x{301}.html"
+                                    { octets => "HTTp://www.exAMPLe.org/re+AwE-sume+AwE-/+ACU-7Euser", encoding => 'UTF-7' }
+                                    ||
+                                    "HTTp://www.exAMPLe.org/re\x{301}sume\x{301}/%7Euser"
                                     ||
                                     "HTTp://eXüAMPLe.com?\x{5135}voila1...\&voila2\#~%eF%BF%Bdf"
                                     ||
@@ -36,6 +38,7 @@ my $iri = MarpaX::RFC::RFC3987->new(shift
                                     ||
                                     "/foo/bar"
                                    );
+exit;
 print Dumper($iri);
 use Data::Dumper;
 print Dumper($iri->as_uri);

@@ -75,7 +75,6 @@ sub as_uri {
 #
 sub build_case_normalizer {
   return { scheme => sub {
-             print STDERR "HERE: " . join(', ', map { defined($_) ? $_ : 'undef' } @_) . "\n";
              lc($_[2]) } }
 }
 

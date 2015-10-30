@@ -26,7 +26,7 @@ Log::Any::Adapter->set('Log4perl');
 
 my $iri = MarpaX::RFC::RFC3987->new(shift
                                     ||
-                                    { octets => "HTTp://www.exAMPLe.org/re+AwE-sume+AwE-/+ACU-7Euser", encoding => 'UTF-7' }
+                                    { octets => "HTTp://www.exAMPLe.org/re+AwE-sume+AwE-/+ACU-7Euser/a/./b/../b/+ACU-63/+ACU-7bfoo+ACU-7d/ros+ACU-C3+ACU-A9/end", encoding => 'UTF-7' }
                                     ||
                                     "HTTp://www.exAMPLe.org/re\x{301}sume\x{301}/%7Euser"
                                     ||

@@ -31,7 +31,7 @@ around build_case_normalizer => sub {
 
   return {
           #
-          # Arguments: $self, $field, $value], $lhs
+          # Arguments: $self, $field, $value, $lhs
           #
           # For all IRIs, the hexadecimal digits within a percent-encoding
           # triplet (e.g., "%3a" versus "%3A") are case-insensitive and therefore
@@ -55,7 +55,7 @@ around build_character_normalizer => sub {
 
   return {
           #
-          # Arguments: $self, $field, $value], $lhs
+          # Arguments: $self, $field, $value, $lhs
           #
           # Equivalence of IRIs MUST rely on the assumption that IRIs are
           # appropriately pre-character-normalized rather than apply character
@@ -76,7 +76,7 @@ around build_percent_encoding_normalizer => sub {
 
   return {
           #
-          # Arguments: $self, $field, $value], $lhs
+          # Arguments: $self, $field, $value, $lhs
           #
           # ./.. IRIs should be normalized by decoding any
           # percent-encoded octet sequence that corresponds to an unreserved
@@ -90,6 +90,20 @@ around build_percent_encoding_normalizer => sub {
             my $decoded = MarpaX::RFC::RFC3629->new($octets)->output;
             $decoded =~ $self->unreserved ? $decoded : $_[2]
           }
+         }
+};
+#
+# 5.3.2.4.  Path Segment Normalization
+#
+around build_path_segment_normalizer => sub {
+  my ($orig, $self) = @_;
+
+  return {
+          #
+          # Arguments: $self, $field, $value, $lhs
+          #
+          'relative_part' => sub { $_[0]->remove_dot_segments($_[2]) },
+          'hier_part'     => sub { $_[0]->remove_dot_segments($_[2]) }
          }
 };
 

@@ -14,31 +14,8 @@ use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdenti
       whoami      => __PACKAGE__,
       type        => 'Common',
       bnf_package => 'MarpaX::RFC::RFC3987::_common::BNF',
-      validator  => sub { },
-      normalizer  => sub {
-        my ($self, $field, $value, $lhs) = @_;
-        #
-        # If field is set it has priority. $lhs is taken only in cases
-        # this is a rule not mapped to the external world. As a special case,
-        # if $lhs is not set neither, this is a call done done just BEFORE
-        # the parsing, using the whole input into $value.
-        # It is guaranteed that a $lhs is always in the form <>, which a $field
-        # is never enclosed in <>.
-        #
-        my $criteria = $field || $lhs || '';
-        # ------------------
-        # Case normalization
-        # ------------------
-        #
-        # scheme is always normalized to lowercase, contains only US-ASCII characters per def
-        #
-        $value = lc($value) if ($criteria eq 'scheme');
-
-        $value
-      }
      };
 use Unicode::Normalize qw/normalize/;
-
 #
 # as_uri is specific to the IRI implementation
 #
@@ -87,5 +64,27 @@ sub as_uri {
   #       sequence (i.e., a sequence of %HH triplets).
   $self->percent_encode($input, $ucschar_or_private_regexp)
 }
+
+#
+# Normalizers semantics are fixed in the Common case
+# Arguments are always: ($self, $field, $value, $lhs)
+# $lhs   is always either undef or in the form '<xxx>'
+# $field is always either undef or in the form 'yyy'
+# If $field is not undef, then $lhs is guaranteed to not be undef
+# If $field is     undef, then if $lhs is undef $value is the original input
+#
+sub build_case_normalizer {
+  return { scheme => sub {
+             print STDERR "HERE: " . join(', ', map { defined($_) ? $_ : 'undef' } @_) . "\n";
+             lc($_[2]) } }
+}
+
+sub build_character_normalizer {
+  return { '' => sub { $_[0]->is_character_normalized ? $_[2] : normalize('NFC', $_[2]) } }
+}
+
+sub build_percent_encoding_normalizer { return {} }
+sub build_path_segment_normalizer { return {} }
+sub build_scheme_based_normalizer { return {} }
 
 1;

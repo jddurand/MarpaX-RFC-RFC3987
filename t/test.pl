@@ -5,8 +5,6 @@ use Data::Dumper;
 use Data::Printer;
 use Encode;
 use MarpaX::RFC::RFC3987;
-use MarpaX::RFC::RFC3987::_common;
-use MarpaX::RFC::RFC3987::_generic;
 use Log::Any qw/$log/;
 use Log::Any::Adapter;
 use Log::Log4perl qw/:easy/;

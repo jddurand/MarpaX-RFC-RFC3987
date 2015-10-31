@@ -19,9 +19,9 @@ use Unicode::Normalize qw/normalize/;
 #
 # as_uri is specific to the IRI implementation
 #
-our $ucschar_regexp = qw/[\x{A0}-\x{D7FF}\x{F900}-\x{FDCF}\x{FDF0}-\x{FFEF}\x{10000}-\x{1FFFD}\x{20000}-\x{2FFFD}\x{30000}-\x{3FFFD}\x{40000}-\x{4FFFD}\x{50000}-\x{5FFFD}\x{60000}-\x{6FFFD}\x{70000}-\x{7FFFD}\x{80000}-\x{8FFFD}\x{90000}-\x{9FFFD}\x{A0000}-\x{AFFFD}\x{B0000}-\x{BFFFD}\x{C0000}-\x{CFFFD}\x{D0000}-\x{DFFFD}\x{E1000}-\x{EFFFD}]/;
-our $iprivate_regexp = qr/[\x{E000}-\x{F8FF}\x{F0000}-\x{FFFFD}\x{100000}-\x{10FFFD}]/;
-our $ucschar_or_private_regexp = qr/(?:$ucschar_regexp|$iprivate_regexp)/;
+our $UCSCHAR = qw/[\x{A0}-\x{D7FF}\x{F900}-\x{FDCF}\x{FDF0}-\x{FFEF}\x{10000}-\x{1FFFD}\x{20000}-\x{2FFFD}\x{30000}-\x{3FFFD}\x{40000}-\x{4FFFD}\x{50000}-\x{5FFFD}\x{60000}-\x{6FFFD}\x{70000}-\x{7FFFD}\x{80000}-\x{8FFFD}\x{90000}-\x{9FFFD}\x{A0000}-\x{AFFFD}\x{B0000}-\x{BFFFD}\x{C0000}-\x{CFFFD}\x{D0000}-\x{DFFFD}\x{E1000}-\x{EFFFD}]/;
+our $IPRIVATE = qr/[\x{E000}-\x{F8FF}\x{F0000}-\x{FFFFD}\x{100000}-\x{10FFFD}]/;
+our $UCSCHAR_OR_IPRIVATE = qr/(?:$UCSCHAR|$IPRIVATE)/;
 
 sub as_uri {
   my ($self) = @_;
@@ -62,28 +62,7 @@ sub as_uri {
   #       SHOULD use uppercase letters.
   # 2.3.  Replace the original character with the resulting character
   #       sequence (i.e., a sequence of %HH triplets).
-  $self->percent_encode($input, $ucschar_or_private_regexp)
+  $self->percent_encode($input, $UCSCHAR_OR_IPRIVATE)
 }
-
-#
-# Normalizers semantics are fixed in the Common case
-# Arguments are always: ($self, $field, $value, $lhs)
-# $lhs   is always either undef or in the form '<xxx>'
-# $field is always either undef or in the form 'yyy'
-# If $field is not undef, then $lhs is guaranteed to not be undef
-# If $field is     undef, then if $lhs is undef $value is the original input
-#
-sub build_case_normalizer {
-  return { scheme => sub {
-             lc($_[2]) } }
-}
-
-sub build_character_normalizer {
-  return { '' => sub { $_[0]->is_character_normalized ? $_[2] : normalize('NFC', $_[2]) } }
-}
-
-sub build_percent_encoding_normalizer { return {} }
-sub build_path_segment_normalizer { return {} }
-sub build_scheme_based_normalizer { return {} }
 
 1;

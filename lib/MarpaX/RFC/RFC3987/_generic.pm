@@ -12,7 +12,7 @@ use Moo;
 use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdentifier'
   => {
       whoami      => __PACKAGE__,
-      type        => 'Generic',
+      type        => '_generic',
       bnf_package => 'MarpaX::RFC::RFC3987::_generic::BNF',
       #
       # Because class is done at compiled time, and we want to say that

@@ -12,7 +12,7 @@ use Moo;
 use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdentifier'
   => {
       whoami      => __PACKAGE__,
-      type        => 'Common',
+      type        => '_common',
       bnf_package => 'MarpaX::RFC::RFC3987::_common::BNF',
      };
 use Unicode::Normalize qw/normalize/;

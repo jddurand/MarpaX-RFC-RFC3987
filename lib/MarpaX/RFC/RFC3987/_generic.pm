@@ -27,7 +27,6 @@ use Unicode::Normalize qw/normalize/;
 #
 around build_case_normalizer => sub {
   my ($orig, $self) = @_;
-
   return {
           #
           # Arguments: $self, $field, $value, $lhs
@@ -51,7 +50,6 @@ around build_case_normalizer => sub {
 #
 around build_character_normalizer => sub {
   my ($orig, $self) = @_;
-
   return {
           #
           # Arguments: $self, $field, $value, $lhs
@@ -72,7 +70,6 @@ around build_character_normalizer => sub {
 #
 around build_percent_encoding_normalizer => sub {
   my ($orig, $self) = @_;
-
   return {
           #
           # Arguments: $self, $field, $value, $lhs
@@ -82,12 +79,14 @@ around build_percent_encoding_normalizer => sub {
           # character, as described in section 2.3 of [RFC3986].
           #
           '<pct encoded>' => sub {
-            my $octets = '';
-            while ($_[2] =~ m/(?<=%)[^%]+/gp) {
-              $octets .= chr(hex(${^MATCH}))
-            }
-            my $decoded = MarpaX::RFC::RFC3629->new($octets)->output;
-            $decoded =~ $self->unreserved ? $decoded : $_[2]
+            my $normalized = $_[2];
+            try {
+              my $octets = '';
+              while ($normalized =~ m/(?<=%)[^%]+/gp) { $octets .= chr(hex(${^MATCH})) }
+              my $decoded = MarpaX::RFC::RFC3629->new($octets)->output;
+              $normalized = $decoded if $decoded =~ $self->unreserved;
+            };
+            $normalized
           }
          }
 };
@@ -96,7 +95,6 @@ around build_percent_encoding_normalizer => sub {
 #
 around build_path_segment_normalizer => sub {
   my ($orig, $self) = @_;
-
   return {
           #
           # Arguments: $self, $field, $value, $lhs
@@ -104,6 +102,13 @@ around build_path_segment_normalizer => sub {
           'relative_part' => sub { $_[0]->remove_dot_segments($_[2]) },
           'hier_part'     => sub { $_[0]->remove_dot_segments($_[2]) }
          }
+};
+#
+# 5.3.3.  Scheme-Based Normalization
+#
+around build_scheme_based_normalizer => sub {
+  my ($orig, $self) = @_;
+  return {}
 };
 
 1;

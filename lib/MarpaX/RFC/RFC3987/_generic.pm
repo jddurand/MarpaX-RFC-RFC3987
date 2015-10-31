@@ -9,7 +9,6 @@ use warnings FATAL => 'all';
 
 package MarpaX::RFC::RFC3987::_generic;
 use Moo;
-use Types::Encodings qw/Bytes/;
 use MarpaX::RFC::RFC3629;
 use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdentifier'
   => {
@@ -44,7 +43,7 @@ around build_case_normalizer => sub {
           # US-ASCII only host are case insensitive and therefore should be
           # normalized to lowercase.
           scheme => sub { lc($_[2]) },
-          host   => sub { Bytes->check($_[2]) ? lc($_[2]) : $_[2] }
+          host   => sub { $_[2] =~ /[^\x{0}-\x{7F}]/ ? $_[2] : lc($_[2]) }
          }
 };
 #

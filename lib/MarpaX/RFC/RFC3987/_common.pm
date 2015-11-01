@@ -15,6 +15,7 @@ use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdenti
       type        => '_common',
       bnf_package => 'MarpaX::RFC::RFC3987::_common::BNF',
      };
+use Scalar::Util qw/blessed/;
 use Unicode::Normalize qw/normalize/;
 #
 # as_uri is specific to the IRI implementation
@@ -23,14 +24,11 @@ our $UCSCHAR = qw/[\x{A0}-\x{D7FF}\x{F900}-\x{FDCF}\x{FDF0}-\x{FFEF}\x{10000}-\x
 our $IPRIVATE = qr/[\x{E000}-\x{F8FF}\x{F0000}-\x{FFFFD}\x{100000}-\x{10FFFD}]/;
 our $UCSCHAR_OR_IPRIVATE = qr/(?:$UCSCHAR|$IPRIVATE)/;
 
+#
+# 3.1.  Mapping of IRIs to URIs
+#
 sub as_uri {
   my ($self) = @_;
-  #
-  # Perl string
-  #
-  my $input = $self->input;
-  #
-  # From https://www.ietf.org/rfc/rfc3987.txt:
   #
   # Step 1
   # ------
@@ -41,13 +39,33 @@ sub as_uri {
   # octet stream) in some known non-Unicode character encoding, convert
   # the IRI to a sequence of characters from the UCS normalized according to NFC.
   #
-  $input = normalize('NFC', $input) if ! $self->is_character_normalized;
   #
-  # c  If the IRI is in a Unicode-based character encoding (for
-  #    example, UTF-8 or UTF-16), do not normalize (see section
-  #    5.3.2.2 for details).  Apply step 2 directly to the
-  #    encoded Unicode character sequence.
+  #   c  If the IRI is in a Unicode-based character encoding (for
+  #      example, UTF-8 or UTF-16), do not normalize (see section
+  #      5.3.2.2 for details).  Apply step 2 directly to the
+  #      encoded Unicode character sequence.
   #
+  my $input = $self->input;
+  my $normalized_input = $self->is_character_normalized ? $input : normalize('NFC', $input);
+  #
+  # Systems accepting IRIs MAY convert the ireg-name component of an IRI
+  # as follows (before step 2 above) for schemes known to use domain
+  # names in ireg-name, if the scheme definition does not allow
+  # percent-encoding for ireg-name
+  #
+  my $converted_input = ($normalized_input eq $input ) ?
+    #
+    # Normalized input is the same as raw input: no need to reparse
+    #
+    $self->output('URI_CONVERTED')
+    :
+    #
+    # Normalized input is not the same as raw input: reparse temporarly
+    # I am not sure this is necessary though (I do not know if domain_to_ascii
+    # is insensitive to NFC normalization)
+    #
+    blessed($self)->new($normalized_input)->output('URI_CONVERTED')
+    ;
   # Step 2
   #
   # For each character in 'ucschar' or 'iprivate', apply steps
@@ -62,7 +80,7 @@ sub as_uri {
   #       SHOULD use uppercase letters.
   # 2.3.  Replace the original character with the resulting character
   #       sequence (i.e., a sequence of %HH triplets).
-  $self->percent_encode($input, $UCSCHAR_OR_IPRIVATE)
+  $self->percent_encode($converted_input, $UCSCHAR_OR_IPRIVATE)
 }
 
 1;

@@ -57,14 +57,14 @@ sub as_uri {
     #
     # Normalized input is the same as raw input: no need to reparse
     #
-    $self->output('URI_CONVERTED')
+    $self->output_by_type('URI_CONVERTED')
     :
     #
     # Normalized input is not the same as raw input: reparse temporarly
     # I am not sure this is necessary though (I do not know if domain_to_ascii
     # is insensitive to NFC normalization)
     #
-    blessed($self)->new($normalized_input)->output('URI_CONVERTED')
+    blessed($self)->new($normalized_input)->output_by_type('URI_CONVERTED')
     ;
   # Step 2
   #

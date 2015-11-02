@@ -26,7 +26,6 @@ class_has bnf         => ( is => 'ro', isa => ScalarRef,    default => sub {    
 class_has reserved    => ( is => 'ro', isa => RegexpRef,    default => sub {       $RESERVED } );
 class_has unreserved  => ( is => 'ro', isa => RegexpRef,    default => sub {     $UNRESERVED } );
 class_has pct_encoded => ( is => 'ro', isa => Str,          default => sub { '<pct encoded>' } );
-class_has is_utf8     => ( is => 'ro', isa => Bool,         default => sub {             !!1 } );
 class_has mapping     => ( is => 'ro', isa => HashRef[Str], default => sub {
                              {
                                '<IRI reference>'  => 'output',

@@ -23,7 +23,6 @@ class_has bnf         => ( is => 'ro', isa => ScalarRef,    default => sub {    
 class_has reserved    => ( is => 'ro', isa => Undef,        default => sub {       $RESERVED } );
 class_has unreserved  => ( is => 'ro', isa => Undef,        default => sub {     $UNRESERVED } );
 class_has pct_encoded => ( is => 'ro', isa => Undef,        default => sub {           undef } );
-class_has is_utf8     => ( is => 'ro', isa => Bool,         default => sub {             !!0 } );
 class_has mapping     => ( is => 'ro', isa => HashRef[Str], default => sub {
                              {
                                '<common>'         => 'output',

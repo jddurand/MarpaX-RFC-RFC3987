@@ -51,6 +51,7 @@ my $iri = MarpaX::RFC::RFC3987->new(shift
                                     ||
                                     "/foo/bar"
                                    );
+my $iri_abs = MarpaX::RFC::RFC3987->new_abs('', MarpaX::RFC::RFC3987->new('http:'));
 print Dumper($iri->as_uri);
 exit;
 print Dumper($iri);

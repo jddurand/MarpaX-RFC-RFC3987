@@ -1,5 +1,4 @@
 inaccessible is ok by default
-:default ::= action => $action    # Replaced on the fly by the role
 :start ::= <IRI reference>
 
 <rel opaque>  ::= <irelative part> '?' <iquery>

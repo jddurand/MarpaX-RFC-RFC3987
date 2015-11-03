@@ -8,26 +8,31 @@ use warnings FATAL => 'all';
 # AUTHORITY
 
 package MarpaX::RFC::RFC3987::_common;
-use Moo;
-use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdentifier'
-  => {
-      whoami      => __PACKAGE__,
-      type        => '_common',
-      bnf_package => 'MarpaX::RFC::RFC3987::_common::BNF',
-     };
 use Scalar::Util qw/blessed/;
 use Unicode::Normalize qw/normalize/;
-#
-# as_uri is specific to the IRI implementation
-#
+use MarpaX::RFC::RFC3987::_top;
+use Moo;
+
 our $UCSCHAR = qw/[\x{A0}-\x{D7FF}\x{F900}-\x{FDCF}\x{FDF0}-\x{FFEF}\x{10000}-\x{1FFFD}\x{20000}-\x{2FFFD}\x{30000}-\x{3FFFD}\x{40000}-\x{4FFFD}\x{50000}-\x{5FFFD}\x{60000}-\x{6FFFD}\x{70000}-\x{7FFFD}\x{80000}-\x{8FFFD}\x{90000}-\x{9FFFD}\x{A0000}-\x{AFFFD}\x{B0000}-\x{BFFFD}\x{C0000}-\x{CFFFD}\x{D0000}-\x{DFFFD}\x{E1000}-\x{EFFFD}]/;
 our $IPRIVATE = qr/[\x{E000}-\x{F8FF}\x{F0000}-\x{FFFFD}\x{100000}-\x{10FFFD}]/;
 our $UCSCHAR_OR_IPRIVATE = qr/(?:$UCSCHAR|$IPRIVATE)/;
 
+sub BUILDARGS {
+  my $class = shift;
+  #
+  # All the hardword is already done by the very top-level package, which is not
+  # a Moo package
+  #
+  MarpaX::RFC::RFC3987::_top->BUILDARGS(@_)
+}
+
 #
-# 3.1.  Mapping of IRIs to URIs
+# as_uri is specific to the IRI implementation
 #
 sub as_uri {
+  # -----------------------------
+  # 3.1.  Mapping of IRIs to URIs
+  # -----------------------------
   my ($self) = @_;
   #
   # Step 1
@@ -82,5 +87,8 @@ sub as_uri {
   #       sequence (i.e., a sequence of %HH triplets).
   $self->percent_encode($converted_input, $UCSCHAR_OR_IPRIVATE)
 }
+
+with 'MarpaX::Role::Parameterized::ResourceIdentifier::Role::_common';
+with 'MarpaX::RFC::RFC3987::_common::BNF';
 
 1;

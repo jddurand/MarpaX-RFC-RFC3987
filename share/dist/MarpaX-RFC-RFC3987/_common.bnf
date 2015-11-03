@@ -1,0 +1,34 @@
+inaccessible is ok by default
+:start ::= <common>
+#
+# Official for generic syntax is
+# my ($scheme, $authority, $path, $query, $fragment) =
+#  $uri =~ m|
+#            (?:([^:/?#]+):)?
+#            (?://([^/?#]*))?
+#            ([^?#]*)
+#            (?:\?([^#]*))?
+#            (?:#(.*))?
+#           |x;
+#
+# The / and ? are assuming the generic behaviour. By removing them
+# we are back to the total opaque regexp:
+#  $uri =~ m|
+#            (?:([^:#]+):)?
+#            ([^#]*)
+#            (?:#(.*))?
+#           |x;
+#
+
+<common>         ::= <scheme maybe> <opaque> <fragment maybe>
+<scheme maybe>   ::= <scheme> ':'
+<scheme maybe>   ::=
+<scheme>         ::= [^:#]+
+<opaque>         ::= [^#]*
+<fragment maybe> ::= '#' <fragment>
+<fragment maybe> ::=
+<fragment>       ::= [\s\S]*
+#
+# In its most general form, only [:#] are reserved
+#
+<gen delims>     ::= [:#]

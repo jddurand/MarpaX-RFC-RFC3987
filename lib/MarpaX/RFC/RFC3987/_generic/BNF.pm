@@ -12,7 +12,7 @@ package MarpaX::RFC::RFC3987::_generic::BNF;
 use File::ShareDir::ProjectDistDir 1.0 qw/dist_dir/, strict => 1;
 use File::Spec qw//;
 use IO::File qw//;
-use Moo;
+use Moo::Role;
 
 our ($BNF, $RESERVED, $UNRESERVED);
 BEGIN {
@@ -43,7 +43,6 @@ use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdenti
       reserved    => $RESERVED,
       unreserved  => $UNRESERVED,
       pct_encoded => '<pct encoded>',
-      action_name => '_action',
       mapping     => {
                       '<IRI reference>'  => 'output',
                       '<scheme>'         => 'scheme',

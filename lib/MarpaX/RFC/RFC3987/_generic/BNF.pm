@@ -16,18 +16,23 @@ use Moo;
 
 our ($BNF, $RESERVED, $UNRESERVED);
 BEGIN {
-  my $bnf_file = File::Spec->catfile(dist_dir('MarpaX-RFC-RFC3987'), '_generic.bnf');
-  my $fh = IO::File->new($bnf_file, 'r');
-  $BNF = do { local $/; <$fh> };
-
-  my $ALPHA   = qr/(?:[A-Za-z])/;
-  my $DIGIT   = qr/(?:[0-9])/;
-  my $UCSCHAR = qr/(?:[\x{A0}-\x{D7FF}\x{F900}-\x{FDCF}\x{FDF0}-\x{FFEF}\x{10000}-\x{1FFFD}\x{20000}-\x{2FFFD}\x{30000}-\x{3FFFD}\x{40000}-\x{4FFFD}\x{50000}-\x{5FFFD}\x{60000}-\x{6FFFD}\x{70000}-\x{7FFFD}\x{80000}-\x{8FFFD}\x{90000}-\x{9FFFD}\x{A0000}-\x{AFFFD}\x{B0000}-\x{BFFFD}\x{C0000}-\x{CFFFD}\x{D0000}-\x{DFFFD}\x{E1000}-\x{EFFFD}])/;
+  # ---
+  # BNF
+  # ---
+  my $bnf_file   = File::Spec->catfile(dist_dir('MarpaX-RFC-RFC3987'), '_generic.bnf');
+  my $fh         = IO::File->new($bnf_file, 'r');
+  $BNF           = do { local $/; <$fh> };
+  # -----------------------
+  # RESERVED and UNRESERVED
+  # -----------------------
+  my $ALPHA      = qr/(?:[A-Za-z])/;
+  my $DIGIT      = qr/(?:[0-9])/;
+  my $UCSCHAR    = qr/(?:[\x{A0}-\x{D7FF}\x{F900}-\x{FDCF}\x{FDF0}-\x{FFEF}\x{10000}-\x{1FFFD}\x{20000}-\x{2FFFD}\x{30000}-\x{3FFFD}\x{40000}-\x{4FFFD}\x{50000}-\x{5FFFD}\x{60000}-\x{6FFFD}\x{70000}-\x{7FFFD}\x{80000}-\x{8FFFD}\x{90000}-\x{9FFFD}\x{A0000}-\x{AFFFD}\x{B0000}-\x{BFFFD}\x{C0000}-\x{CFFFD}\x{D0000}-\x{DFFFD}\x{E1000}-\x{EFFFD}])/;
   my $GEN_DELIMS = qr/(?:[\:\/\?\[\]\@\#])/;
-  my$SUB_DELIMS = qr/(?:[\!\$\&\'\(\)\*\+\,\;\=])/;
+  my $SUB_DELIMS = qr/(?:[\!\$\&\'\(\)\*\+\,\;\=])/;
 
-  $RESERVED   = qr/(?:$GEN_DELIMS|$SUB_DELIMS)/;
-  $UNRESERVED = qr/(?:$ALPHA|$DIGIT|[\-._~]|$UCSCHAR)/;
+  $RESERVED      = qr/(?:$GEN_DELIMS|$SUB_DELIMS)/;
+  $UNRESERVED    = qr/(?:$ALPHA|$DIGIT|[\-._~]|$UCSCHAR)/;
 }
 
 use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdentifier::BNF'

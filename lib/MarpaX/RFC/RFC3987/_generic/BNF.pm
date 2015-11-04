@@ -3,7 +3,7 @@ use warnings FATAL => 'all';
 
 package MarpaX::RFC::RFC3987::_generic::BNF;
 
-# ABSTRACT: Internationalized Resource Identifier (IRI): Generic Syntax - Marpa BNF
+# ABSTRACT: Internationalized Resource Identifier (IRI): Generic Syntax - BNF role
 
 # VERSION
 

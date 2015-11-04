@@ -9,7 +9,7 @@ package MarpaX::RFC::RFC3987::_top;
 
 # AUTHORITY
 
-use parent qw/MarpaX::Role::Parameterized::ResourceIdentifier::Role::_top/;
+use parent qw/MarpaX::Role::Parameterized::ResourceIdentifier::Impl::_top/;
 
 1;
 

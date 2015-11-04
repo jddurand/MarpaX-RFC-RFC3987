@@ -12,8 +12,8 @@ use Moo;
 
 extends 'MarpaX::RFC::RFC3987::_common';
 
-with 'MarpaX::Role::Parameterized::ResourceIdentifier::Role::_generic';
 with 'MarpaX::RFC::RFC3987::_generic::BNF';
+with 'MarpaX::Role::Parameterized::ResourceIdentifier::Role::_generic';
 
 1;
 

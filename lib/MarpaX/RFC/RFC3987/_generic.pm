@@ -10,9 +10,8 @@ use warnings FATAL => 'all';
 package MarpaX::RFC::RFC3987::_generic;
 use Moo;
 
-extends 'MarpaX::RFC::RFC3987::_common';
-
 with 'MarpaX::RFC::RFC3987::_generic::BNF';
+with 'MarpaX::Role::Parameterized::ResourceIdentifier::Role::_common';
 with 'MarpaX::Role::Parameterized::ResourceIdentifier::Role::_generic';
 
 1;

@@ -29,7 +29,7 @@ my $iri = MarpaX::RFC::RFC3987->new(shift
                                     { octets => "HTTp://www.exAMPLe.org/re+AwE-sume+AwE-/+ACU-7Euser/a/./b/../b/+ACU-63/+ACU-7bfoo+ACU-7d/ros+ACU-C3+ACU-A9/end", encoding => 'UTF-7',
                                       is_reg_name_convert_to_IRI => 'X', is_reg_name_as_domain_name => 1, is_character_normalized => 0 }
                                     ||
-                                    { input => "HTTp://re\x{301}sume\x{301}.example.org/%7euser", is_character_normalized => 0, is_reg_name_convert_to_IRI => 'X', is_reg_name_as_domain_name => 1 }
+                                    { input => "HTTp://re\x{301}sume\x{301}.example.org/%7euser", is_character_normalized => 1, is_reg_name_convert_to_IRI => 'X', is_reg_name_as_domain_name => 1 }
                                     ||
                                     "http://example.com/\x{10300}\x{10301}\x{10302}"
                                     ||

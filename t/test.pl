@@ -26,7 +26,7 @@ Log::Any::Adapter->set('Log4perl');
 
 my $iri = MarpaX::RFC::RFC3987->new(shift
                                     ||
-                                    { octets => "HTTp://www.exAMPLe.org:80/re+AwE-sume+AwE-/+ACU-7Euser/a/./b/../b/+ACU-63/+ACU-7bfoo+ACU-7d/ros+ACU-C3+ACU-A9/end", encoding => 'UTF-7',
+                                    { octets => "HTTp://www.exAMPLe.org:80/re+AwE-sume+AwE-/+ACU-7E+ACU-7euser/a/./b/../b/+ACU-63/+ACU-7bfoo+ACU-7d/ros+ACU-C3+ACU-A9/end", encoding => 'UTF-7',
                                       is_reg_name_as_domain_name => 1, is_character_normalized => 0, default_port => 80 }
                                     ||
                                     { input => "HTTp://re\x{301}sume\x{301}.example.org/%7euser", is_character_normalized => 1, is_reg_name_convert_to_IRI => 'X', is_reg_name_as_domain_name => 1 }

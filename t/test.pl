@@ -32,8 +32,10 @@ print '"" test is ' . $overload_test[0] . " and " . $overload_test[1] . "\n";
 
 my $iri = MarpaX::RFC::RFC3987->new(shift
                                     ||
-                                    { octets => "HTTp://www.exAMPLe.org:80/re+AwE-sume+AwE-/+ACU-7E+ACU-7euser/a/./b/../b/+ACU-63/+ACU-7bfoo+ACU-7d/ros+ACU-C3+ACU-A9/end",
+                                    { input => "http://\x{7D0D}\x{8C46}.example.org/%41%E2%89%A2%CE%91%2E%ED%95%9C%EA%B5%AD%EC%96%B4-%E6%97%A5%E6%9C%AC%E8%AA%9E-%EF%BB%BF%F0%A3%8E%B4/%7E%7euser",
+                                      # octets => "HTTp://www.exAMPLe.org:80/re+AwE-sume+AwE-/+ACU-7E+ACU-7euser/a/./b/../b/+ACU-63/+ACU-7bfoo+ACU-7d/ros+ACU-C3+ACU-A9/end",
                                       encoding => 'UTF-7',
+                                      decode_strategy => "test",
                                       is_character_normalized => 0 }
                                     ||
                                     { input => "HTTp://re\x{301}sume\x{301}.example.org/%7euser", is_character_normalized => 1, is_reg_name_convert_to_IRI => 'X', is_reg_name_as_domain_name => 1 }

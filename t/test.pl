@@ -15,7 +15,7 @@ binmode STDERR, ":encoding(utf8)";
 # Init
 # ----
 my $defaultLog4perlConf = <<DEFAULT_LOG4PERL_CONF;
-log4perl.rootLogger              = TRACE, Screen
+log4perl.rootLogger              = WARN, Screen
 log4perl.appender.Screen         = Log::Log4perl::Appender::Screen
 log4perl.appender.Screen.stderr  = 0
 log4perl.appender.Screen.layout  = PatternLayout
@@ -48,7 +48,29 @@ my %ref2base = (
                 "../g"          =>  "http://a/b/g",
                 "../.."         =>  "http://a/",
                 "../../"        =>  "http://a/",
-                "../../g"       =>  "http://a/g"
+                "../../g"       =>  "http://a/g",
+                #
+                # Abnormal cases
+                #
+                "../../../g"    =>  "http://a/g",
+                "../../../../g" =>  "http://a/g",
+                "/./g"          =>  "http://a/g",
+                "/../g"         =>  "http://a/g",
+                "g."            =>  "http://a/b/c/g.",
+                ".g"            =>  "http://a/b/c/.g",
+                "g.."           =>  "http://a/b/c/g..",
+                "..g"           =>  "http://a/b/c/..g",
+                "./../g"        =>  "http://a/b/g",
+                "./g/."         =>  "http://a/b/c/g/",
+                "g/./h"         =>  "http://a/b/c/g/h",
+                "g/../h"        =>  "http://a/b/c/h",
+                "g;x=1/./y"     =>  "http://a/b/c/g;x=1/y",
+                "g;x=1/../y"    =>  "http://a/b/c/y",
+                "g?y/./x"       =>  "http://a/b/c/g?y/./x",
+                "g?y/../x"      =>  "http://a/b/c/g?y/../x",
+                "g#s/./x"       =>  "http://a/b/c/g#s/./x",
+                "g#s/../x"      =>  "http://a/b/c/g#s/../x",
+                "http:g"        =>  "http:g"
                );
 foreach (keys %ref2base) {
   my $ref2base = MarpaX::RFC::RFC3987->new($_)->abs($base);

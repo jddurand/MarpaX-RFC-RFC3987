@@ -24,6 +24,42 @@ DEFAULT_LOG4PERL_CONF
 Log::Log4perl::init(\$defaultLog4perlConf);
 Log::Any::Adapter->set('Log4perl');
 
+my $base = 'http://a/b/c/d;p?q';
+my %ref2base = (
+                "g:h"           =>  "g:h",
+                "g"             =>  "http://a/b/c/g",
+                "./g"           =>  "http://a/b/c/g",
+                "g/"            =>  "http://a/b/c/g/",
+                "/g"            =>  "http://a/g",
+                "//g"           =>  "http://g",
+                "?y"            =>  "http://a/b/c/d;p?y",
+                "g?y"           =>  "http://a/b/c/g?y",
+                "#s"            =>  "http://a/b/c/d;p?q#s",
+                "g#s"           =>  "http://a/b/c/g#s",
+                "g?y#s"         =>  "http://a/b/c/g?y#s",
+                ";x"            =>  "http://a/b/c/;x",
+                "g;x"           =>  "http://a/b/c/g;x",
+                "g;x?y#s"       =>  "http://a/b/c/g;x?y#s",
+                ""              =>  "http://a/b/c/d;p?q",
+                "."             =>  "http://a/b/c/",
+                "./"            =>  "http://a/b/c/",
+                ".."            =>  "http://a/b/",
+                "../"           =>  "http://a/b/",
+                "../g"          =>  "http://a/b/g",
+                "../.."         =>  "http://a/",
+                "../../"        =>  "http://a/",
+                "../../g"       =>  "http://a/g"
+               );
+foreach (keys %ref2base) {
+  my $ref2base = MarpaX::RFC::RFC3987->new($_)->abs($base);
+  if ($ref2base eq $ref2base{$_}) {
+    print STDERR "OK for $_ => $ref2base\n";
+  } else {
+    print STDERR "KO for $_ => $ref2base instead of $ref2base{$_}\n";
+  }
+}
+exit;
+
 my @overload_test = (MarpaX::RFC::RFC3987->new("http://example.org/~user"), MarpaX::RFC::RFC3987->new("http://example.org/%7euser"));
 print '== test is ' . ($overload_test[0] == $overload_test[1]) ? "OK\n" : "KO\n";
 print '!= test is ' . ($overload_test[0] != $overload_test[1]) ? "OK\n" : "KO\n";

@@ -58,6 +58,19 @@ foreach (keys %ref2base) {
     print STDERR "KO for $_ => $ref2base instead of $ref2base{$_}\n";
   }
 }
+#
+# Idem but with an object instead of a string
+#
+print STDERR "============ Use object instead of a string for $base\n";
+$base = MarpaX::RFC::RFC3987->new('http://a/b/c/d;p?q');
+foreach (keys %ref2base) {
+  my $ref2base = MarpaX::RFC::RFC3987->new($_)->abs($base);
+  if ($ref2base eq $ref2base{$_}) {
+    print STDERR "OK for $_ => $ref2base\n";
+  } else {
+    print STDERR "KO for $_ => $ref2base instead of $ref2base{$_}\n";
+  }
+}
 exit;
 
 my @overload_test = (MarpaX::RFC::RFC3987->new("http://example.org/~user"), MarpaX::RFC::RFC3987->new("http://example.org/%7euser"));

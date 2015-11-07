@@ -10,6 +10,18 @@ use Test::File::ShareDir
              -module => { 'MarpaX::RFC::RFC3987' => 'share' }
   };
 use Taint::Util;
+use Log::Any qw/$log/;
+use Log::Any::Adapter;
+use Log::Log4perl qw/:easy/;
+
+my $defaultLog4perlConf = <<DEFAULT_LOG4PERL_CONF;
+log4perl.rootLogger              = TRACE, Screen
+log4perl.appender.Screen         = Log::Log4perl::Appender::Screen
+log4perl.appender.Screen.layout  = PatternLayout
+log4perl.appender.Screen.layout.ConversionPattern = %d %-5p %6P %m{chomp}%n
+DEFAULT_LOG4PERL_CONF
+Log::Log4perl::init(\$defaultLog4perlConf);
+Log::Any::Adapter->set('Log4perl');
 
 binmode STDOUT, ":encoding(utf8)";
 binmode STDERR, ":encoding(utf8)";
@@ -129,9 +141,6 @@ use constant {
 };
 use constant {
   TEST_FIELDS => {
-                  #
-                  # We intentionnaly use a text that is having
-                  # everything
                   "http://user:password\@example.org:1234/~user/somewhere/?query1&query2=this#fragment1&fragment2" =>
                   {
                    'relative_ref' => undef,
@@ -161,6 +170,36 @@ use constant {
                    'ipv4_address' => undef,
                    'ip_literal' => undef,
                    'authority' => 'user:password@example.org:1234'
+                  },
+                  "http://user:password\@[2010:836B:4179::836B:4179%25pvc1.3]:1234/~user/somewhere/?query1&query2=this#fragment1&fragment2" =>
+                  {
+                   'relative_ref' => undef,
+                   'fragment' => 'fragment1&fragment2',
+                   'segment' => '/~user/somewhere/',
+                   'ipv6_addrz' => '2010:836B:4179::836B:4179%25pvc1.3',
+                   'segments' => [
+                                  '',
+                                  '~user',
+                                  'somewhere',
+                                  ''
+                                 ],
+                   'opaque' => '//user:password@[2010:836B:4179::836B:4179%25pvc1.3]:1234/~user/somewhere/?query1&query2=this',
+                   'userinfo' => 'user:password',
+                   'relative_part' => undef,
+                   'ipv6_address' => '2010:836B:4179::836B:4179',
+                   'reg_name' => undef,
+                   'query' => 'query1&query2=this',
+                   'zoneid' => 'pvc1.3',
+                   'scheme' => 'http',
+                   'path' => '/~user/somewhere/',
+                   'output' => 'http://user:password@[2010:836B:4179::836B:4179%25pvc1.3]:1234/~user/somewhere/?query1&query2=this#fragment1&fragment2',
+                   'port' => '1234',
+                   'host' => '[2010:836B:4179::836B:4179%25pvc1.3]',
+                   'hier_part' => '//user:password@[2010:836B:4179::836B:4179%25pvc1.3]:1234/~user/somewhere/',
+                   'ipvfuture' => undef,
+                   'ipv4_address' => undef,
+                   'ip_literal' => '[2010:836B:4179::836B:4179%25pvc1.3]',
+                   'authority' => 'user:password@[2010:836B:4179::836B:4179%25pvc1.3]:1234'
                   }
                  }
 };

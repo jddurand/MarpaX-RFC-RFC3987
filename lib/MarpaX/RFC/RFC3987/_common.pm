@@ -9,8 +9,8 @@ use warnings FATAL => 'all';
 
 package MarpaX::RFC::RFC3987::_common;
 use Scalar::Util qw/blessed/;
-use Unicode::Normalize qw/normalize/;
 use Moo;
+use Unicode::Normalize qw/normalize/;
 
 with 'MarpaX::RFC::RFC3987::_common::BNF';
 with 'MarpaX::Role::Parameterized::ResourceIdentifier::Role::_common';
@@ -43,7 +43,7 @@ sub as_uri {
   #      5.3.2.2 for details).  Apply step 2 directly to the
   #      encoded Unicode character sequence.
   #
-  my $input = $self->input;
+  my $input            = $self->input;
   my $normalized_input = $self->is_character_normalized ? $input : normalize('NFC', $input);
   #
   # Systems accepting IRIs MAY convert the ireg-name component of an IRI
@@ -51,18 +51,18 @@ sub as_uri {
   # names in ireg-name, if the scheme definition does not allow
   # percent-encoding for ireg-name
   #
-  my $converted_input = ($normalized_input eq $input ) ?
+  my $converted_input = ($normalized_input eq $input) ?
     #
     # Normalized input is the same as raw input: no need to reparse
     #
-    $self->output_by_type('URI_CONVERTED')
+    $self->converted
     :
     #
     # Normalized input is not the same as raw input: reparse temporarly
     # I am not sure this is necessary though (I do not know if domain_to_ascii
     # is insensitive to NFC normalization)
     #
-    blessed($self)->new($normalized_input)->output_by_type('URI_CONVERTED')
+    blessed($self)->new($normalized_input)->converted
     ;
   # Step 2
   #

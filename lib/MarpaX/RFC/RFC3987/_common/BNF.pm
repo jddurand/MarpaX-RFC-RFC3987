@@ -33,6 +33,7 @@ use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdenti
   => {
       whoami      => __PACKAGE__,
       type        => 'common',
+      spec        => 'iri',
       bnf         => $BNF,
       reserved    => $RESERVED,
       unreserved  => $UNRESERVED,

@@ -15,7 +15,7 @@ binmode STDERR, ":encoding(utf8)";
 # Init
 # ----
 my $defaultLog4perlConf = <<DEFAULT_LOG4PERL_CONF;
-log4perl.rootLogger              = WARN, Screen
+log4perl.rootLogger              = TRACE, Screen
 log4perl.appender.Screen         = Log::Log4perl::Appender::Screen
 log4perl.appender.Screen.stderr  = 0
 log4perl.appender.Screen.layout  = PatternLayout
@@ -72,6 +72,7 @@ my %ref2base = (
                 "g#s/../x"      =>  "http://a/b/c/g#s/../x",
                 "http:g"        =>  "http:g"
                );
+
 foreach (keys %ref2base) {
   my $ref2base = MarpaX::RFC::RFC3987->new($_)->abs($base);
   if ($ref2base eq $ref2base{$_}) {
@@ -93,15 +94,15 @@ foreach (keys %ref2base) {
     print STDERR "KO for $_ => $ref2base instead of $ref2base{$_}\n";
   }
 }
-exit;
 
 my @overload_test = (MarpaX::RFC::RFC3987->new("http://example.org/~user"), MarpaX::RFC::RFC3987->new("http://example.org/%7euser"));
-print '== test is ' . ($overload_test[0] == $overload_test[1]) ? "OK\n" : "KO\n";
-print '!= test is ' . ($overload_test[0] != $overload_test[1]) ? "OK\n" : "KO\n";
-print '"" test is ' . $overload_test[0] . " and " . $overload_test[1] . "\n";
-# exit;
+print STDERR '== test is ' . ($overload_test[0] == $overload_test[1] ? "OK" : "KO") . "\n";
+print STDERR '!= test is ' . ($overload_test[0] != $overload_test[1] ? "KO" : "OK") . "\n";
+print STDERR '"" test is ' . $overload_test[0] . " and " . $overload_test[1] . "\n";
 
-my $iri = MarpaX::RFC::RFC3987->new(shift
+my $iri = MarpaX::RFC::RFC3987->new((@ARGV)
+                                    ||
+                                    { input => "HTTp://re\x{301}sume\x{301}.example.org/%7euser", is_character_normalized => 1, reg_name_convert_as_domain_name => 1 }
                                     ||
                                     {
                                      input => "http://\x{7D0D}\x{8C46}.example.org/%41%E2%89%A2%CE%91%2E%ED%95%9C%EA%B5%AD%EC%96%B4-%E6%97%A5%E6%9C%AC%E8%AA%9E-%EF%BB%BF%F0%A3%8E%B4/%7E%7euser#red&blue",
@@ -110,8 +111,6 @@ my $iri = MarpaX::RFC::RFC3987->new(shift
                                      decode_strategy => "test",
                                      # is_character_normalized => 0
                                     }
-                                    ||
-                                    { input => "HTTp://re\x{301}sume\x{301}.example.org/%7euser", is_character_normalized => 1, is_reg_name_convert_to_IRI => 'X', is_reg_name_as_domain_name => 1 }
                                     ||
                                     "http://example.com/\x{10300}\x{10301}\x{10302}"
                                     ||
@@ -134,13 +133,11 @@ my $iri = MarpaX::RFC::RFC3987->new(shift
                                     "/foo/bar"
                                    );
 p($iri);
-exit;
 my $abs = MarpaX::RFC::RFC3987->new('http://a/b/c/d;p?q');
-exit;
 MarpaX::RFC::RFC3987->new_abs('g:h', $abs);
 MarpaX::RFC::RFC3987->new_abs('g', $abs);
 MarpaX::RFC::RFC3987->new_abs('../../g', $abs);
-print Dumper($iri->as_uri);
+print "===> $iri as uri: " . $iri->as_uri . "\n";
 print Dumper($iri);
 exit;
 exit;

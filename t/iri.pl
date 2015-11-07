@@ -1,15 +1,24 @@
-#!perl
+#!perl -T
 use strict;
 use warnings FATAL => 'all';
 use Scalar::Util qw/blessed/;
 use Test::More;
+use FindBin;
+use Test::File::ShareDir
+  -root => "$FindBin::Bin/../",
+  -share => {
+             -module => { 'MarpaX::RFC::RFC3987' => 'share' }
+  };
+use Taint::Util;
+
 binmode STDOUT, ":encoding(utf8)";
 binmode STDERR, ":encoding(utf8)";
 
 our $_test_abs_base;
 BEGIN {
-    use_ok('MarpaX::RFC::RFC3987') || print "Bail out!\n";
-    $_test_abs_base = 'http://a/b/c/d;p?q';
+  untaint $ENV{PATH};      # Because of File::ShareDir::ProjectDistDir
+  use_ok('MarpaX::RFC::RFC3987') || print "Bail out!\n";
+  $_test_abs_base = 'http://a/b/c/d;p?q';
 }
 
 subtest "Reference Resolution with base as Str"    => \&_test_abs_base_as_Str;

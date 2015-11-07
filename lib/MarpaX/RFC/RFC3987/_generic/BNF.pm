@@ -13,6 +13,7 @@ use File::ShareDir::ProjectDistDir 1.0 qw/dist_dir/, strict => 1;
 use File::Spec qw//;
 use IO::File qw//;
 use Moo::Role;
+use Taint::Util;
 
 our ($BNF, $RESERVED, $UNRESERVED);
 BEGIN {
@@ -22,6 +23,7 @@ BEGIN {
   my $bnf_file   = File::Spec->catfile(dist_dir('MarpaX-RFC-RFC3987'), '_generic.bnf');
   my $fh         = IO::File->new($bnf_file, 'r');
   $BNF           = do { local $/; <$fh> };
+  untaint $BNF;
   # -----------------------
   # RESERVED and UNRESERVED
   # -----------------------

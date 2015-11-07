@@ -65,7 +65,7 @@ use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdenti
                       '<irelative part>' => 'relative_part',
                       '<iuserinfo>'      => 'userinfo',
                       '<ihost>'          => 'host',
-                      '<iport>'          => 'port',
+                      '<port>'           => 'port',
                       '<IP literal>'     => 'ip_literal',
                       '<IPv6address>'    => 'ipv6_address',
                       '<IPv4address>'    => 'ipv4_address',

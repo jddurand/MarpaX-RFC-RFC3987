@@ -18,6 +18,7 @@ subtest "Overload with URI compatibility"          => \&_test_overload_with_uri_
 subtest "Overload without URI compatibility"       => \&_test_overload_without_uri_compatibility;
 subtest "is_absolute"                              => \&_test_is_absolute;
 subtest "Cloning "                                 => \&_test_clone;
+subtest "canonical and normalized are identical"   => \&_test_canonical;
 
 done_testing();
 
@@ -110,6 +111,12 @@ use constant {
                  'test 02' => "http://example.org/%7euser"
                 }
 };
+use constant {
+  TEST_CANONICAL => {
+                     'test 01' => "http://example.org/~user",
+                     'test 02' => "http://example.org/%7euser"
+                    }
+};
 #
 # Tests implementations
 #
@@ -160,5 +167,14 @@ sub _test_clone {
     my $orig  = MarpaX::RFC::RFC3987->new($_);
     my $clone = $orig->clone;
     is($orig, $clone, "Cloning of '$_'");
+  }
+}
+
+sub _test_canonical {
+  plan tests => scalar(values %{TEST_CANONICAL()});
+
+  foreach (values %{TEST_CANONICAL()}) {
+    my $o = MarpaX::RFC::RFC3987->new($_);
+    is($o->canonical, $o->normalized, "'$_' canonical and normalized strings are identical");
   }
 }

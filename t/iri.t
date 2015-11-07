@@ -21,13 +21,14 @@ BEGIN {
   $_test_abs_base = 'http://a/b/c/d;p?q';
 }
 
-subtest "Reference Resolution with base as Str"    => \&_test_abs_base_as_Str;
-subtest "Reference Resolution with base as Object" => \&_test_abs_base_as_Object;
-subtest "Overload with URI compatibility"          => \&_test_overload_with_uri_compatibility;
-subtest "Overload without URI compatibility"       => \&_test_overload_without_uri_compatibility;
-subtest "is_absolute"                              => \&_test_is_absolute;
-subtest "Cloning "                                 => \&_test_clone;
-subtest "canonical and normalized are identical"   => \&_test_canonical;
+subtest "Reference Resolution with base as Str"      => \&_test_abs_base_as_Str;
+subtest "Reference Resolution with base as Object"   => \&_test_abs_base_as_Object;
+subtest "Overload with URI compatibility"            => \&_test_overload_with_uri_compatibility;
+subtest "Overload without URI compatibility"         => \&_test_overload_without_uri_compatibility;
+subtest "is_absolute"                                => \&_test_is_absolute;
+subtest "Cloning "                                   => \&_test_clone;
+subtest "canonical() and normalized() are identical" => \&_test_canonical;
+subtest "Internal fields"                            => \&_test_fields;
 
 done_testing();
 
@@ -126,6 +127,43 @@ use constant {
                      'test 02' => "http://example.org/%7euser"
                     }
 };
+use constant {
+  TEST_FIELDS => {
+                  #
+                  # We intentionnaly use a text that is having
+                  # everything
+                  "http://user:password\@example.org:1234/~user/somewhere/?query1&query2=this#fragment1&fragment2" =>
+                  {
+                   'relative_ref' => undef,
+                   'fragment' => 'fragment1&fragment2',
+                   'segment' => '/~user/somewhere/',
+                   'ipv6_addrz' => undef,
+                   'segments' => [
+                                  '',
+                                  '~user',
+                                  'somewhere',
+                                  ''
+                                 ],
+                   'opaque' => '//user:password@example.org:1234/~user/somewhere/?query1&query2=this',
+                   'userinfo' => 'user:password',
+                   'relative_part' => undef,
+                   'ipv6_address' => undef,
+                   'reg_name' => 'example.org',
+                   'query' => 'query1&query2=this',
+                   'zoneid' => undef,
+                   'scheme' => 'http',
+                   'path' => '/~user/somewhere/',
+                   'output' => 'http://user:password@example.org:1234/~user/somewhere/?query1&query2=this#fragment1&fragment2',
+                   'port' => '1234',
+                   'host' => 'example.org',
+                   'hier_part' => '//user:password@example.org:1234/~user/somewhere/',
+                   'ipvfuture' => undef,
+                   'ipv4_address' => undef,
+                   'ip_literal' => undef,
+                   'authority' => 'user:password@example.org:1234'
+                  }
+                 }
+};
 #
 # Tests implementations
 #
@@ -185,5 +223,18 @@ sub _test_canonical {
   foreach (values %{TEST_CANONICAL()}) {
     my $o = MarpaX::RFC::RFC3987->new($_);
     is($o->canonical, $o->normalized, "'$_' canonical and normalized strings are identical");
+  }
+}
+
+sub _test_fields {
+  plan tests => scalar(keys %{TEST_FIELDS()});
+
+  foreach (keys %{TEST_FIELDS()}) {
+    my $h = TEST_FIELDS()->{$_};
+    my $o = MarpaX::RFC::RFC3987->new($_);
+    #
+    # is_deeply requires the same blessing
+    #
+    is_deeply($o->_raw_struct, bless($h, blessed($o->_raw_struct)), "'$_' raw structure");
   }
 }

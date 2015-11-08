@@ -1,19 +1,16 @@
 use strict;
 use warnings FATAL => 'all';
 
-# ABSTRACT: Internationalized Resource Identifier (IRI): Common syntax implementation
-
-# VERSION
-
-# AUTHORITY
-
 package MarpaX::RFC::RFC3987::_common;
 use Scalar::Util qw/blessed/;
 use Moo;
 use Unicode::Normalize qw/normalize/;
 
-with 'MarpaX::RFC::RFC3987::_common::BNF';
-with 'MarpaX::Role::Parameterized::ResourceIdentifier::Role::_common';
+# ABSTRACT: Internationalized Resource Identifier (IRI): Common syntax implementation
+
+# VERSION
+
+# AUTHORITY
 
 # --------------------------------------------
 # as_uri is specific to the IRI implementation
@@ -80,5 +77,8 @@ sub as_uri {
   #       sequence (i.e., a sequence of %HH triplets).
   $self->percent_encode($converted_input, $UCSCHAR_OR_IPRIVATE)
 }
+
+with 'MarpaX::RFC::RFC3987::_common::BNF';
+with 'MarpaX::Role::Parameterized::ResourceIdentifier::Role::_common';
 
 1;

@@ -236,6 +236,13 @@ sub _test_abs_old_parser_mode {
   my $base = MarpaX::RFC::RFC3987->new($_test_abs_base);
 
   local $URI::ABS_ALLOW_RELATIVE_SCHEME = 1;
+  {
+    #
+    # perl think we probably made a typo if we do not use
+    # this local variable
+    #
+    my $dummy = $URI::ABS_ALLOW_RELATIVE_SCHEME;
+  }
   foreach (keys %{TEST_ABS_OLD_PARSER_MODE()}) {
     my $wanted = TEST_ABS_OLD_PARSER_MODE()->{$_};
     my $got    = MarpaX::RFC::RFC3987->new($_)->abs($base);

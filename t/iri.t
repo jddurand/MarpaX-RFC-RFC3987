@@ -3,12 +3,6 @@ use strict;
 use warnings FATAL => 'all';
 use Scalar::Util qw/blessed/;
 use Test::More;
-use FindBin;
-use Test::File::ShareDir
-  -root => "$FindBin::Bin/../",
-  -share => {
-             -module => { 'MarpaX::RFC::RFC3987' => 'share' }
-  };
 use Taint::Util;
 use Log::Any qw/$log/;
 use Log::Any::Adapter;

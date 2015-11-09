@@ -20,11 +20,9 @@ Log::Any::Adapter->set('Log4perl');
 binmode STDOUT, ":encoding(utf8)";
 binmode STDERR, ":encoding(utf8)";
 
-our $_test_abs_base;
 BEGIN {
   untaint $ENV{PATH};      # Because of File::ShareDir::ProjectDistDir
   use_ok('MarpaX::RFC::RFC3987') || print "Bail out!\n";
-  $_test_abs_base = 'http://a/b/c/d;p?q';
 }
 
 #
@@ -32,6 +30,7 @@ BEGIN {
 #
 $ENV{MarpaX_RI_URI_COMPAT} = 1;
 
+our $_test_abs_base = $_test_abs_base = 'http://a/b/c/d;p?q';
 subtest "Reference Resolution with base as Str"                     => \&_test_abs_base_as_Str;
 subtest "Reference Resolution with base as Object"                  => \&_test_abs_base_as_Object;
 subtest "Reference Resolution and \$URI::ABS_ALLOW_RELATIVE_SCHEME" => \&_test_abs_old_parser_mode;

@@ -38,8 +38,9 @@ subtest "Overload with URI compatibility"                           => \&_test_o
 subtest "Overload without URI compatibility"                        => \&_test_overload_without_uri_compatibility;
 subtest "is_absolute"                                               => \&_test_is_absolute;
 subtest "Cloning "                                                  => \&_test_clone;
-subtest "canonical() and normalized() are identical"                => \&_test_canonical;
+subtest "canonical() and normalized() are identical"                => \&_test_canonical_and_normalized;
 subtest "Internal fields"                                           => \&_test_fields;
+subtest "scheme"                                                    => \&_test_scheme;
 
 done_testing();
 
@@ -138,10 +139,10 @@ use constant {
                 }
 };
 use constant {
-  TEST_CANONICAL => {
-                     'test 01' => "http://example.org/~user",
-                     'test 02' => "http://example.org/%7euser"
-                    }
+  TEST_CANONICAL_AND_NORMALIZED => {
+                                    'test 01' => "http://example.org/~user",
+                                    'test 02' => "http://example.org/%7euser"
+                                   }
 };
 use constant {
   TEST_FIELDS => {
@@ -205,6 +206,12 @@ use constant {
                    'ip_literal' => '[2010:836B:4179::836B:4179%25pvc1.3]',
                    'authority' => 'user:password@[2010:836B:4179::836B:4179%25pvc1.3]:1234'
                   }
+                 }
+};
+use constant {
+  TEST_SCHEME => {
+                  "http://example.org/~user" => 'ftp',
+                  "ftp://example.org/~user" => 'ftp&&ok_only_with_common_syntax',
                  }
 };
 #
@@ -280,10 +287,10 @@ sub _test_clone {
   }
 }
 
-sub _test_canonical {
-  plan tests => scalar(values %{TEST_CANONICAL()});
+sub _test_canonical_and_normalized {
+  plan tests => scalar(values %{TEST_CANONICAL_AND_NORMALIZED()});
 
-  foreach (values %{TEST_CANONICAL()}) {
+  foreach (values %{TEST_CANONICAL_AND_NORMALIZED()}) {
     my $o = MarpaX::RFC::RFC3987->new($_);
     is($o->canonical, $o->normalized, "'$_' canonical and normalized strings are identical");
   }
@@ -299,5 +306,21 @@ sub _test_fields {
     # is_deeply requires the same blessing
     #
     is_deeply($o->_raw_struct, bless($h, blessed($o->_raw_struct)), "'$_' raw structure");
+  }
+}
+
+sub _test_scheme {
+  plan tests => scalar(keys %{TEST_SCHEME()});
+
+  foreach (keys %{TEST_SCHEME()}) {
+    my $input = $_;
+
+    my $obj = MarpaX::RFC::RFC3987->new($input);
+    my $old_scheme = $obj->scheme;
+
+    my $wanted_scheme  = TEST_SCHEME()->{$input};
+    my $new_scheme  = $obj->scheme($wanted_scheme);
+
+    is($new_scheme, $wanted_scheme, "$input' scheme changed to '$wanted_scheme'");
   }
 }

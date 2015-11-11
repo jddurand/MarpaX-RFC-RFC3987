@@ -41,6 +41,7 @@ subtest "Cloning "                                                  => \&_test_c
 subtest "canonical() and normalized() are identical"                => \&_test_canonical_and_normalized;
 subtest "Internal fields"                                           => \&_test_fields;
 subtest "scheme"                                                    => \&_test_scheme;
+subtest "eq"                                                        => \&_test_eq;
 
 done_testing();
 
@@ -214,6 +215,13 @@ use constant {
                   "ftp://example.org/~user" => 'ftp&&ok_only_with_common_syntax',
                  }
 };
+use constant {
+  TEST_EQ => {
+      'equality 01' => [ "http://example.org/~user", "http://example.org/%7euser",      1 ],
+      'equality 02' => [ "http://example.org/~user", "http://example.org/%7euser_nope", 0 ]
+  }
+};
+
 #
 # Tests implementations
 #
@@ -324,3 +332,22 @@ sub _test_scheme {
     is($new_scheme, $wanted_scheme, "$input' scheme changed to '$wanted_scheme'");
   }
 }
+
+sub _test_eq {
+  plan tests => scalar(values %{TEST_EQ()}) * 2;
+
+  foreach (values %{TEST_EQ()}) {
+      my $is_eq = pop @{$_};
+
+      my @uri = map { MarpaX::RFC::RFC3987->new($_) } @{$_};
+
+      if ($is_eq) {
+          ok(MarpaX::RFC::RFC3987::eq(@uri),  "@uri as objects are canonically equivalent");
+          ok(MarpaX::RFC::RFC3987::eq(@{$_}), "@{$_} as plain strings are canonically equivalent");
+      } else {
+          ok(! MarpaX::RFC::RFC3987::eq(@uri),  "@uri as objects are not canonically equivalent");
+          ok(! MarpaX::RFC::RFC3987::eq(@{$_}), "@uri as plain strings are not canonically equivalent");
+      }
+  }
+}
+

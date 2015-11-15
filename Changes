@@ -1,6 +1,90 @@
 Changelog for MarpaX-RFC-RFC3987
 
-0.001 2015-09-20T08:59:45
+0.002 2015-11-14T05:19:36
+ [Jean-Damien Durand <jeandamiendurand@free.fr>]
+ - t+: eq
+ - t+: test scheme
+ - t+: moved a variable outside of BEGIN
+ - t+: No need to overwrite share dir definition when we use
+   ProjectDistDist
+ - dev+: WTF one day to find why it was crashing at compile time... Putting
+   # VERSION outside of the package namespace will silently overwrite
+   Module::Runtime::VERSION
+ - dev+: put extends after role composition
+ - dev+: ShareDir section in dist.ini
+ - dev+: top dependency when using the parameterized role
+ - t+: Removed a perl warning
+ - t+: $URI::ABS_ALLOW_RELATIVE_SCHEME
+ - t+: test with ipv6 adress and zone
+ - t+: internal fields
+ - _generic/BNF.pm: fix port binding
+ - t+: git mv t/iri.pl t/iri.t
+ - t+: taint mode
+ - t+: canonical
+ - t+: clone
+ - t+: overload and is_absolute tests
+ - Test::More
+ - dev+: notion of spec in BNF
+ - dev+: abs() on abnormal cases
+ - dev+: abs() using an object instead of a string for absolute reference
+ - t+: ref2abs
+ - t+: fragments
+ - t+
+ - t+: BUILDARGS centralization
+ - t+: overload test
+ - dev+: with order v.s. arounds
+ - dev+: prefer roles
+ - dev+: architecture
+ - t+: default_port
+ - dev+: use BUILDARGS from the role
+ - dev+: factorization
+ - BNF role refactorization, space alignments
+ - BNF role refactorization
+ - dev+
+ - t+: new_abs
+ - dev+: removed unused use_utf8 constraint
+ - t+: for as_uri test
+ - dev+: domain_to_ascii fix
+ - dev+: as_uri fix
+ - dev+: Removed remaining normalizers from _common
+ - dev+: use _common and _generic instead of Common and Generic
+ - dev+: moved all normalizers in the role ! -;
+ - dev+: build_percent_encoding_normalizer revisit
+ - dev+: fix host case normalization
+ - dev+: path segment normalization
+ - dev+: back to domain_to_ascii
+ - dev+: normalization
+ - dev+: as_uri
+ - dev+: character normalization test
+ - dev+: one line was duplicate
+ - dev+: the return of character normalization
+ - dev+: but the extends in a BEGIN
+ - dev+: Do Character Normalization only at the very end
+ - dev+: Support of Character Normalization stategy (NFC, NFKC, etc.)
+ - dev+: put normalizer in the generic instance, not in the grammar
+ - dev+: case normalization for <pct encoded>
+ - dev+: normalization fix
+ - dev+: normalizer
+ - dev+: isdn, nfc
+ - dev+: eq
+ - dev+: revmoed fragments
+ - dev+: use setters
+ - dev+: segments fix
+ - dev+: escape/unescape modes
+ - dev+: opaque overwrite
+ - More attributes in BNF
+ - dev+: changed requires on grammars
+ - as_uri
+ - removed a comment in _common BNF that
+ - rewriten _common BNF that, I feel that closer to the original -;
+ - dev+: common ambiguity
+ - dev+: less hacks
+ - Complete _generic proxy routines
+ - Revisit with MarpaX::Role::Parameterized::ResourceIdentifier
+ - t/uritest: Fix after is_absolute change
+ - URI proxy methods and fix for is_absolute
+
+0.001 2015-09-20T09:00:15Z
  [Jean-Damien Durand <jeandamiendurand@free.fr>]
  - Changes/META.json/README.pod for the 1st release...
  - Initial commit

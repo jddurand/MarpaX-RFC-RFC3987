@@ -1,5 +1,5 @@
 {
-   "abstract" : "Internationalized Resource Identifier (IRI): Generic Syntax - Marpa Parser",
+   "abstract" : "Internationalized Resource Identifier (IRI)",
    "author" : [
       "Jean-Damien Durand <jeandamiendurand@free.fr>"
    ],
@@ -23,6 +23,7 @@
       "configure" : {
          "requires" : {
             "ExtUtils::MakeMaker" : "0",
+            "File::ShareDir::Install" : "0.06",
             "perl" : "5.006"
          }
       },
@@ -44,19 +45,27 @@
             "Test::Pod::LinkCheck" : "0",
             "Test::Spelling" : "0.12",
             "Test::Synopsis" : "0",
-            "Test::Version" : "1",
-            "warnings" : "0"
+            "Test::Version" : "1"
          }
       },
       "runtime" : {
          "requires" : {
-            "Marpa::R2" : "0",
+            "File::ShareDir::ProjectDistDir" : "1.0",
+            "File::Spec" : "0",
+            "IO::File" : "0",
+            "MarpaX::Role::Parameterized::ResourceIdentifier::Impl::_top" : "0",
+            "MarpaX::Role::Parameterized::ResourceIdentifier::Role::_common" : "0",
+            "MarpaX::Role::Parameterized::ResourceIdentifier::Role::_generic" : "0",
             "Moo" : "0",
-            "MooX::ClassAttribute" : "0",
-            "Types::Standard" : "0",
-            "diagnostics" : "0",
-            "perl" : "5.006",
-            "strict" : "0"
+            "Moo::Role" : "0",
+            "MooX::Role::Parameterized::With" : "0",
+            "Scalar::Util" : "0",
+            "Taint::Util" : "0",
+            "Unicode::Normalize" : "0",
+            "parent" : "0",
+            "perl" : "5.008",
+            "strict" : "0",
+            "warnings" : "0"
          }
       },
       "test" : {
@@ -64,22 +73,46 @@
             "CPAN::Meta" : "2.120900"
          },
          "requires" : {
+            "Business::ISBN" : "0",
+            "Data::Dumper" : "0",
+            "Encode" : "0",
             "ExtUtils::MakeMaker" : "0",
             "File::Spec" : "0",
+            "File::Spec::Functions" : "0",
             "File::Temp" : "0",
             "IO::Handle" : "0",
             "IPC::Open3" : "0",
+            "Log::Any" : "0",
+            "Log::Any::Adapter" : "0",
+            "Log::Log4perl" : "0",
+            "MIME::Base64" : "0",
+            "Net::Domain" : "0",
+            "Storable" : "0",
+            "Test" : "0",
+            "Test::DistManifest" : "0",
             "Test::More" : "0",
+            "URI" : "0",
+            "URI::Escape" : "0",
+            "URI::Heuristic" : "0",
+            "URI::IRI" : "0",
+            "URI::QueryParam" : "0",
+            "URI::Split" : "0",
+            "URI::URL" : "0",
+            "URI::WithBase" : "0",
+            "URI::_idna" : "0",
+            "URI::_punycode" : "0",
+            "URI::file" : "0",
             "blib" : "1.01",
-            "perl" : "5.006",
-            "warnings" : "0"
+            "constant" : "0",
+            "perl" : "5.008",
+            "utf8" : "0"
          }
       }
    },
    "provides" : {
       "MarpaX::RFC::RFC3987" : {
          "file" : "lib/MarpaX/RFC/RFC3987.pm",
-         "version" : "0.001"
+         "version" : "0.002"
       }
    },
    "release_status" : "stable",
@@ -95,6 +128,7 @@
          "web" : "https://github.com/jddurand/marpax-rfc-rfc3987"
       }
    },
-   "version" : "0.001"
+   "version" : "0.002",
+   "x_authority" : "cpan:JDDPAUSE"
 }
 

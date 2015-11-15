@@ -1,9 +1,9 @@
 use strict;
 use warnings FATAL => 'all';
 
-package MarpaX::RFC::RFC3987::_common::BNF;
+package MarpaX::RFC::RFC3987::Role::_common::BNF;
 
-# ABSTRACT: Internationalized Resource Identifier (IRI): Common Syntax - BNF role
+# ABSTRACT: Internationalized Resource Identifier (IRI): Common BNF role
 
 # VERSION
 

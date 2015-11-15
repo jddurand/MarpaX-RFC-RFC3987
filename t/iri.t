@@ -28,20 +28,23 @@ BEGIN {
 #
 # We do not want the test to depend on the environnement
 #
-$ENV{MarpaX_RI_URI_COMPAT} = 1;
+no warnings 'once';
+local $MarpaX::RI::URI_COMPAT                = 0;
+local $MarpaX::RI::ABS_REMOTE_LEADING_DOTS   = 0;
+local $MarpaX::RI::ABS_ALLOW_RELATIVE_SCHEME = 0;
 
 our $_test_abs_base = $_test_abs_base = 'http://a/b/c/d;p?q';
-subtest "Reference Resolution with base as Str"                     => \&_test_abs_base_as_Str;
-subtest "Reference Resolution with base as Object"                  => \&_test_abs_base_as_Object;
-subtest "Reference Resolution and \$URI::ABS_ALLOW_RELATIVE_SCHEME" => \&_test_abs_old_parser_mode;
-subtest "Overload with URI compatibility"                           => \&_test_overload_with_uri_compatibility;
-subtest "Overload without URI compatibility"                        => \&_test_overload_without_uri_compatibility;
-subtest "is_absolute"                                               => \&_test_is_absolute;
-subtest "Cloning "                                                  => \&_test_clone;
-subtest "canonical() and normalized() are identical"                => \&_test_canonical_and_normalized;
-subtest "Internal fields"                                           => \&_test_fields;
-subtest "scheme"                                                    => \&_test_scheme;
-subtest "eq"                                                        => \&_test_eq;
+subtest "Reference Resolution with base as Str"                             => \&_test_abs_base_as_Str;
+subtest "Reference Resolution with base as Object"                          => \&_test_abs_base_as_Object;
+subtest "Reference Resolution and \$$MarpaX::RI::ABS_ALLOW_RELATIVE_SCHEME" => \&_test_abs_old_parser_mode;
+subtest "Overload with URI compatibility"                                   => \&_test_overload_with_uri_compatibility;
+subtest "Overload without URI compatibility"                                => \&_test_overload_without_uri_compatibility;
+subtest "is_absolute"                                                       => \&_test_is_absolute;
+subtest "Cloning "                                                          => \&_test_clone;
+subtest "canonical() and normalized() are identical"                        => \&_test_canonical_and_normalized;
+subtest "Internal fields"                                                   => \&_test_fields;
+subtest "scheme"                                                            => \&_test_scheme;
+subtest "eq"                                                                => \&_test_eq;
 
 done_testing();
 
@@ -50,8 +53,8 @@ done_testing();
 #
 # Proxies
 #
-sub _test_abs_base_as_Str                    { _test_abs($_test_abs_base) }
-sub _test_abs_base_as_Object                 { _test_abs(MarpaX::RFC::RFC3987->new($_test_abs_base)) }
+sub _test_abs_base_as_Str                    { local $MarpaX::RI::ABS_REMOTE_LEADING_DOTS = 1; _test_abs($_test_abs_base) }
+sub _test_abs_base_as_Object                 { local $MarpaX::RI::ABS_REMOTE_LEADING_DOTS = 1; _test_abs(MarpaX::RFC::RFC3987->new($_test_abs_base)) }
 sub _test_overload_with_uri_compatibility    { _test_overload(1) }
 sub _test_overload_without_uri_compatibility { _test_overload(0) }
 #
@@ -154,7 +157,6 @@ use constant {
                    'segment' => '/~user/somewhere/',
                    'ipv6_addrz' => undef,
                    'segments' => [
-                                  '',
                                   '~user',
                                   'somewhere',
                                   ''
@@ -184,7 +186,6 @@ use constant {
                    'segment' => '/~user/somewhere/',
                    'ipv6_addrz' => '2010:836B:4179::836B:4179%25pvc1.3',
                    'segments' => [
-                                  '',
                                   '~user',
                                   'somewhere',
                                   ''
@@ -228,6 +229,7 @@ use constant {
 sub _test_abs {
   plan tests => scalar(keys %{TEST_ABS()});
 
+  local $MarpaX::RI::ABS_REMOTE_LEADING_DOTS = 1;
   my $base = shift;
   my $blessed_base = blessed($base) || 'Str';
 
@@ -239,18 +241,12 @@ sub _test_abs {
 }
 
 sub _test_abs_old_parser_mode {
+  local $MarpaX::RI::ABS_REMOTE_LEADING_DOTS = 1;
   plan tests => scalar(keys %{TEST_ABS_OLD_PARSER_MODE()});
 
   my $base = MarpaX::RFC::RFC3987->new($_test_abs_base);
 
-  local $URI::ABS_ALLOW_RELATIVE_SCHEME = 1;
-  {
-    #
-    # perl think we probably made a typo if we do not use
-    # this local variable
-    #
-    my $dummy = $URI::ABS_ALLOW_RELATIVE_SCHEME;
-  }
+  local $MarpaX::RI::ABS_ALLOW_RELATIVE_SCHEME = 1;
   foreach (keys %{TEST_ABS_OLD_PARSER_MODE()}) {
     my $wanted = TEST_ABS_OLD_PARSER_MODE()->{$_};
     my $got    = MarpaX::RFC::RFC3987->new($_)->abs($base);

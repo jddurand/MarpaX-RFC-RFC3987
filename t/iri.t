@@ -34,17 +34,17 @@ local $MarpaX::RI::ABS_REMOTE_LEADING_DOTS   = 0;
 local $MarpaX::RI::ABS_ALLOW_RELATIVE_SCHEME = 0;
 
 our $_test_abs_base = $_test_abs_base = 'http://a/b/c/d;p?q';
-subtest "Reference Resolution with base as Str"                             => \&_test_abs_base_as_Str;
-subtest "Reference Resolution with base as Object"                          => \&_test_abs_base_as_Object;
-subtest "Reference Resolution and \$$MarpaX::RI::ABS_ALLOW_RELATIVE_SCHEME" => \&_test_abs_old_parser_mode;
-subtest "Overload with URI compatibility"                                   => \&_test_overload_with_uri_compatibility;
-subtest "Overload without URI compatibility"                                => \&_test_overload_without_uri_compatibility;
-subtest "is_absolute"                                                       => \&_test_is_absolute;
-subtest "Cloning "                                                          => \&_test_clone;
-subtest "canonical() and normalized() are identical"                        => \&_test_canonical_and_normalized;
-subtest "Internal fields"                                                   => \&_test_fields;
-subtest "scheme"                                                            => \&_test_scheme;
-subtest "eq"                                                                => \&_test_eq;
+subtest "Reference Resolution with base as Str"               => \&_test_abs_base_as_Str;
+subtest "Reference Resolution with base as Object"            => \&_test_abs_base_as_Object;
+subtest "Reference Resolution and non-strict mode"            => \&_test_abs_old_parser_mode;
+subtest "Overload with URI compatibility"                     => \&_test_overload_with_uri_compatibility;
+subtest "Overload without URI compatibility"                  => \&_test_overload_without_uri_compatibility;
+subtest "is_absolute"                                         => \&_test_is_absolute;
+subtest "Cloning "                                            => \&_test_clone;
+subtest "canonical() and normalized() are identical"          => \&_test_canonical_and_normalized;
+subtest "Internal fields"                                     => \&_test_fields;
+subtest "eq"                                                  => \&_test_eq;
+subtest "scheme"                                              => \&_test_scheme;
 
 done_testing();
 
@@ -55,8 +55,7 @@ done_testing();
 #
 sub _test_abs_base_as_Str                    { local $MarpaX::RI::ABS_REMOTE_LEADING_DOTS = 1; _test_abs($_test_abs_base) }
 sub _test_abs_base_as_Object                 { local $MarpaX::RI::ABS_REMOTE_LEADING_DOTS = 1; _test_abs(MarpaX::RFC::RFC3987->new($_test_abs_base)) }
-sub _test_overload_with_uri_compatibility    { _test_overload(1) }
-sub _test_overload_without_uri_compatibility { _test_overload(0) }
+
 #
 # Constants
 #
@@ -115,10 +114,23 @@ use constant {
                               }
 };
 use constant {
-  TEST_OVERLOAD => {
-                    'equality' => [ "http://example.org/~user", "http://example.org/%7euser" ]
+  TEST_OVERLOAD_WITH_URI_COMPATIBILITY => {
+                                           '!=' => [ "http://example.org/~user", "http://example.org/%7euser", 1 ],
+                                           '==' => [ "http://example.org/~user", "http://example.org/%7euser", 0 ],
+                                           'eq' => [ "http://example.org/~user", "http://example.org/%7euser", 0 ],
+                                           'ne' => [ "http://example.org/~user", "http://example.org/%7euser", 1 ]
                    }
 };
+sub _test_overload_with_uri_compatibility    { local $MarpaX::RI::URI_COMPAT  = 1; _test_overload(TEST_OVERLOAD_WITH_URI_COMPATIBILITY) }
+use constant {
+  TEST_OVERLOAD_WITHOUT_URI_COMPATIBILITY => {
+                                              '!=' => [ "http://example.org/~user", "http://example.org/%7euser", 0 ],
+                                              '==' => [ "http://example.org/~user", "http://example.org/%7euser", 1 ],
+                                              'eq' => [ "http://example.org/~user", "http://example.org/%7euser", 0 ],
+                                              'ne' => [ "http://example.org/~user", "http://example.org/%7euser", 1 ]
+                   }
+};
+sub _test_overload_without_uri_compatibility { local $MarpaX::RI::URI_COMPAT = 0; _test_overload(TEST_OVERLOAD_WITHOUT_URI_COMPATIBILITY) }
 use constant {
   TEST_IS_ABSOLUTE => {
                        "/localhost/?jdd#f±f2"                                => 0,
@@ -213,7 +225,6 @@ use constant {
 use constant {
   TEST_SCHEME => {
                   "http://example.org/~user" => 'ftp',
-                  "ftp://example.org/~user" => 'ftp&&ok_only_with_common_syntax',
                  }
 };
 use constant {
@@ -255,19 +266,20 @@ sub _test_abs_old_parser_mode {
 }
 
 sub _test_overload {
-  plan tests => scalar(values %{TEST_OVERLOAD()}) * 2;
+  my $source = shift;
+  plan tests => scalar(keys %{$source});
 
-  my $uri_compat = shift;
-  local $ENV{MarpaX_RI_URI_COMPAT} = $uri_compat;
-
-  foreach (values %{TEST_OVERLOAD()}) {
-    my @overload = map { MarpaX::RFC::RFC3987->new($_) } @{$_};
-    if ($uri_compat) {
-      ok($overload[0] != $overload[1], "'$overload[0]' != '$overload[1]'");
-      ok($overload[0] ne $overload[1], "'$overload[0]' ne '$overload[1]'");
+  foreach (sort keys %{$source}) {
+    my $test = $_;
+    my @input = @{$source->{$test}};
+    my $expected = pop @input;
+    my @obj = map { MarpaX::RFC::RFC3987->new($_) } @input;
+    if ($test eq '!=')      { my $value = $obj[0] != $obj[1]; ok($value == $expected, "'$obj[0]' != '$obj[1]' ? " . ($expected ? "yes" : "no"));
+    } elsif ($test eq '==') { my $value = $obj[0] == $obj[1]; ok($value == $expected, "'$obj[0]' == '$obj[1]' ? " . ($expected ? "yes" : "no"));
+    } elsif ($test eq 'eq') { my $value = $obj[0] eq $obj[1]; ok($value == $expected, "'$obj[0]' eq '$obj[1]' ? " . ($expected ? "yes" : "no"));
+    } elsif ($test eq 'ne') { my $value = $obj[0] ne $obj[1]; ok($value == $expected, "'$obj[0]' ne '$obj[1]' ? " . ($expected ? "yes" : "no"));
     } else {
-      ok($overload[0] == $overload[1], "'$overload[0]' == '$overload[1]'");
-      ok($overload[0] ne $overload[1], "'$overload[0]' ne '$overload[1]'");
+      die "Unknown test $test";
     }
   }
 }

@@ -1,6 +1,3 @@
-inaccessible is ok by default
-:start ::= <IRI reference>
-
 <rel opaque>  ::= <irelative part> '?' <iquery>
                 | <irelative part>
 

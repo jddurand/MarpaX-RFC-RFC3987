@@ -43,6 +43,7 @@ use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdenti
       type        => 'generic',
       spec        => 'iri',
       top         => 'MarpaX::RFC::RFC3987',
+      start       => '<IRI reference>',
       bnf         => $BNF,
       reserved    => $RESERVED,
       unreserved  => $UNRESERVED,

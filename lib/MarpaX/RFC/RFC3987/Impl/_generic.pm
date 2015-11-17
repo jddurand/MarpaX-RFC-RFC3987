@@ -10,8 +10,6 @@ use Moo;
 
 # AUTHORITY
 
-extends 'MarpaX::RFC::RFC3987::Impl::_common';
-
 with 'MarpaX::RFC::RFC3987::Role::_generic';
 
 1;

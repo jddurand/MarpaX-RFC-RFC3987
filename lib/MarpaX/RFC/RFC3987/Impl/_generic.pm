@@ -10,9 +10,9 @@ use Moo;
 
 # AUTHORITY
 
-with 'MarpaX::RFC::RFC3987::Role::_generic::BNF';
-with 'MarpaX::Role::Parameterized::ResourceIdentifier::Role::_common';
-with 'MarpaX::Role::Parameterized::ResourceIdentifier::Role::_generic';
+extends 'MarpaX::RFC::RFC3987::Impl::_common';
+
+with 'MarpaX::RFC::RFC3987::Role::_generic';
 
 1;
 

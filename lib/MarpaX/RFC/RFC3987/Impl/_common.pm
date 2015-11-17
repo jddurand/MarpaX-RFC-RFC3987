@@ -10,7 +10,6 @@ use Moo;
 
 # AUTHORITY
 
-with 'MarpaX::RFC::RFC3987::Role::_common::BNF';
-with 'MarpaX::Role::Parameterized::ResourceIdentifier::Role::_common';
+with 'MarpaX::RFC::RFC3987::Role::_common';
 
 1;

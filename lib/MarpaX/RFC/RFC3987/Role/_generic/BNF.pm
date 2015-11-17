@@ -40,7 +40,7 @@ BEGIN {
 use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdentifier::BNF'
   => {
       whoami      => __PACKAGE__,
-      type        => 'generic',
+      type        => '_generic',
       spec        => 'iri',
       top         => 'MarpaX::RFC::RFC3987',
       start       => '<IRI reference>',

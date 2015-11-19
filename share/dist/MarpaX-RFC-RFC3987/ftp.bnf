@@ -1,0 +1,55 @@
+#
+# Reference: https://tools.ietf.org/html/draft-yevstifeyev-ftp-uri-scheme-08
+#
+# IRI version (despite the name remained <ftp uri>. As per https://tools.ietf.org/html/draft-yevstifeyev-ftp-uri-scheme-08#section-6.2
+# the following changes were made to <ftp uri>:
+#
+# The changes required in URI syntax to match valid IRI is to change
+# <host> of RFC 3986 to <ihost> of RFC 3987 and <unreserved> of RFC
+# 3986 to <iunreserved> of RFC 3987 in <segment-nsc>.  The <userinfo>
+# is not internationalized.
+#
+# Note: the ftp string must be made absolute before using this BNF
+#
+#
+<ftp uri>          ::= 'ftp:' <ftp hier part>
+<ftp hier part>    ::= '//'                <ihost>
+                     | '//' <userinfo> '@' <ihost>
+                     | '//'                <ihost> ':' <port>
+                     | '//' <userinfo> '@' <ihost> ':' <port>
+                     | '//'                <ihost>            <ftp path>
+                     | '//' <userinfo> '@' <ihost>            <ftp path>
+                     | '//'                <ihost> ':' <port> <ftp path>
+                     | '//' <userinfo> '@' <ihost> ':' <port> <ftp path>
+
+<userinfo>       ::= <user>
+                   | <user> ':' <pass>
+<user>           ::= <usp char>+
+<pass>           ::= <usp char>*
+<usp char>       ::= <unreserved>                                      # Explicitely NOT internationalized
+                   | <pct encoded>
+                   | <sub delims>
+<ftp path>       ::=            '/' <last segment>
+                   | <cwd part> '/' <last segment>
+                   |            '/' <last segment> <typecode part>
+                   | <cwd part> '/' <last segment> <typecode part>
+
+<cwd part unit>  ::= '/' <cwd>
+<cwd part>       ::= <cwd part unit>*
+<cwd>            ::= <segment nsc>
+<last segment>   ::= <segment nsc>
+<segment nsc>    ::= <pchar nsc>*
+<pchar nsc>      ::= <iunreserved>
+                   | <pct encoded>
+                   | <sub delims nsc>
+                   | [:@]
+<sub delims nsc> ::= [!$&'()*+,=]                    # RFC 3986 <sub-delims> excluding semicolon (';') character (ASCII character 0x3B)
+<typecode part>  ::= ';type=' <typecode>
+<typecode>       ::= [aeiud]              rank => 1  # Because this is ambiguous with <typecode ext>
+                   | <typecode ext>
+<typecode ext>   ::= ALPHA
+
+#
+# The following is a COPY of RFC 3968's unreserved
+#
+<unreserved>    ::= ALPHA | DIGIT | [-._~]

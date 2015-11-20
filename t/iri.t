@@ -1,9 +1,8 @@
-#!perl -T
+#!perl
 use strict;
 use warnings FATAL => 'all';
 use Scalar::Util qw/blessed/;
 use Test::More;
-use Taint::Util;
 use Log::Any qw/$log/;
 use Log::Any::Adapter;
 use Log::Log4perl qw/:easy/;
@@ -21,7 +20,6 @@ binmode STDOUT, ":encoding(utf8)";
 binmode STDERR, ":encoding(utf8)";
 
 BEGIN {
-  untaint $ENV{PATH};      # Because of File::ShareDir::ProjectDistDir
   use_ok('MarpaX::RFC::RFC3987') || print "Bail out!\n";
 }
 

@@ -10,12 +10,12 @@ use Moo;
 
 # AUTHORITY
 
+use Carp qw/croak/;
 use File::ShareDir::ProjectDistDir 1.0 qw/dist_dir/, strict => 1;
 use File::Spec qw//;
 use IO::File qw//;
 use MarpaX::RFC::RFC3987::Impl::_generic;
 use Moo;
-use Taint::Util;
 #
 # Scheme registration
 #
@@ -32,7 +32,8 @@ BEGIN {
   $bnf_file      = File::Spec->catfile(dist_dir('MarpaX-RFC-RFC3987'), '_generic.bnf');
   $fh            = IO::File->new($bnf_file, 'r');
   $BNF          .= do { local $/; <$fh> };
-  untaint $BNF;
+  $BNF =~ /\A(.*)\z/s || croak 'Failed to untaint';
+  $BNF = $1; # We trust our BNF
   # ---------
   # For reuse
   # ---------

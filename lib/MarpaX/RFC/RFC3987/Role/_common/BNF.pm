@@ -9,11 +9,11 @@ package MarpaX::RFC::RFC3987::Role::_common::BNF;
 
 # AUTHORITY
 
+use Carp qw/croak/;
 use File::ShareDir::ProjectDistDir 1.0 qw/dist_dir/, strict => 1;
 use File::Spec qw//;
 use IO::File qw//;
 use Moo::Role;
-use Taint::Util;
 
 our ($ROLE_PARAMS);
 BEGIN {
@@ -23,7 +23,8 @@ BEGIN {
   my $bnf_file   = File::Spec->catfile(dist_dir('MarpaX-RFC-RFC3987'), '_common.bnf');
   my $fh         = IO::File->new($bnf_file, 'r');
   my $BNF        = do { local $/; <$fh> };
-  untaint $BNF;
+  $BNF =~ /\A(.*)\z/s || croak 'Failed to untaint';
+  $BNF = $1; # We trust our BNF
   # -----------------------
   # RESERVED and UNRESERVED
   # -----------------------

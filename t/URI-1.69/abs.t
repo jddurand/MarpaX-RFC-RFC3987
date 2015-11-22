@@ -7,6 +7,7 @@ print "1..45\n";
 # in the "Uniform Resource Identifiers (URI): Generic Syntax" document.
 
 use MarpaX::RFC::RFC3987;
+local $MarpaX::RI::URI_COMPAT = 1;
 my $base = "http://a/b/c/d;p?q";
 my $testno = 1;
 my @rel_fail;

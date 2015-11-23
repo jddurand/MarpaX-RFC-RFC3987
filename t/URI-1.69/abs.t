@@ -26,7 +26,7 @@ while (<DATA>) {
    if ($u->abs($base)->as_string ne $expect) {
        $bad++;
        my $abs = $u->abs($base)->as_string;
-       print qq(MarpaX::RFC::RFC3987->new("$uref")->abs("$base") ==> "$abs" (not "$expect")\n);
+       print qq(MarpaX::RFC::RFC3987->new("$uref", "$base")->abs("$base") ==> "$abs" (not "$expect")\n);
    }
 
    # Let's test another version of the same thing
@@ -41,7 +41,7 @@ while (<DATA>) {
    # Let's try the other way
    $u = MarpaX::RFC::RFC3987->new($expect)->rel($base)->as_string;
    if ($u ne $uref) {
-       push(@rel_fail, qq($testno: MarpaX::RFC::RFC3987->new("$expect", "$base")->rel ==> "$u" (not "$uref")\n));
+       push(@rel_fail, qq($testno: MarpaX::RFC::RFC3987->new("$expect")->rel("$base") ==> "$u" (not "$uref")\n));
    }
 
    print "not " if $bad;

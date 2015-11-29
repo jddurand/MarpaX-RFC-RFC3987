@@ -28,8 +28,8 @@ BEGIN {
   # -----------------------
   # RESERVED and UNRESERVED
   # -----------------------
-  my $RESERVED   = qr/[:#]/;
-  my $UNRESERVED = qr/[^:#]/;
+  my $RESERVED   = qr/[:#]/;   # Only common delimiters are reserved in the common syntax.
+  my $UNRESERVED = qr/[\s\S]/; # Everything is unreserved. This make escape() a no-op.
   # ---------
   # For reuse
   # ---------

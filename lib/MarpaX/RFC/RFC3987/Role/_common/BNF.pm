@@ -25,6 +25,11 @@ BEGIN {
   my $BNF        = do { local $/; <$fh> };
   $BNF =~ /\A(.*)\z/s || croak 'Failed to untaint';
   $BNF = $1; # We trust our BNF
+  # -----------------------
+  # RESERVED and UNRESERVED
+  # -----------------------
+  my $RESERVED   = qr/[:#]/;    # Only common delimiters are reserved in the common syntax.
+  my $UNRESERVED = qr/[^\s\S]/; # Nothing is unreserved in the common syntax.
   # ---------
   # For reuse
   # ---------
@@ -35,7 +40,8 @@ BEGIN {
                   top         => 'MarpaX::RFC::RFC3987',
                   start       => '<common>',
                   bnf         => $BNF,
-                  unreserved  => undef,
+                  reserved    => $RESERVED,
+                  unreserved  => $UNRESERVED,
                   pct_encoded => undef,
                   mapping     => {
                                   '<common>'         => 'output',

@@ -45,6 +45,7 @@ BEGIN {
   $ROLE_PARAMS->{extends}     = 'MarpaX::RFC::RFC3987::Impl::_generic';
   $ROLE_PARAMS->{start}       = '<ftp uri>';
   $ROLE_PARAMS->{bnf}         = $BNF;
+  $ROLE_PARAMS->{server}      = 1;
   $ROLE_PARAMS->{mapping}     = {
                                  '<user>'         => 'user',
                                  '<pass>'         => 'password',

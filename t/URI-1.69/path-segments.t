@@ -3,10 +3,11 @@ use warnings;
 
 use Test::More 'no_plan';
 
-use URI ();
+use MarpaX::RFC::RFC3987;
+local $MarpaX::RI::URI_COMPAT = 1;
 
 {
-    my $u = URI->new("http://www.example.org/a/b/c");
+    my $u = MarpaX::RFC::RFC3987->new("http://www.example.org/a/b/c");
 
     is_deeply [$u->path_segments], ['', qw(a b c)], 'path_segments in list context';
     is $u->path_segments, '/a/b/c', 'path_segments in scalar context';
@@ -19,15 +20,17 @@ use URI ();
 }
 
 {
-    my $u = URI->new("http://www.example.org/abc");
+    my $u = MarpaX::RFC::RFC3987->new("http://www.example.org/abc");
     $u->path_segments('', '%', ';', '/');
     is $u->path_segments, '/%25/%3B/%2F', 'escaping special characters';
 }
 
 {
-    my $u = URI->new("http://www.example.org/abc;param1;param2");
+    my $u = MarpaX::RFC::RFC3987->new("http://www.example.org/abc;param1;param2");
     my @ps = $u->path_segments;
-    isa_ok $ps[1], 'URI::_segment';
+    use Data::Dumper;
+    print STDERR Dumper(\@ps);
+    isa_ok $ps[1], 'MarpaX::Role::Parameterized::ResourceIdentifier::Impl::Segment';
     $u->path_segments(@ps);
     is $u->path_segments, '/abc;param1;param2', 'dealing with URI segments';
 }

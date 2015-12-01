@@ -28,8 +28,6 @@ local $MarpaX::RI::URI_COMPAT = 1;
 {
     my $u = MarpaX::RFC::RFC3987->new("http://www.example.org/abc;param1;param2");
     my @ps = $u->path_segments;
-    use Data::Dumper;
-    print STDERR Dumper(\@ps);
     isa_ok $ps[1], 'MarpaX::Role::Parameterized::ResourceIdentifier::Impl::Segment';
     $u->path_segments(@ps);
     is $u->path_segments, '/abc;param1;param2', 'dealing with URI segments';

@@ -3,10 +3,11 @@ use warnings;
 
 print "1..13\n";
 
-use URI;
+use MarpaX::RFC::RFC3987;
+local $MarpaX::RI::URI_COMPAT = 1;
 my $uri;
 
-$uri = URI->new("ftp://ftp.example.com/path");
+$uri = MarpaX::RFC::RFC3987->new("ftp://ftp.example.com/path");
 
 print "not " unless $uri->scheme eq "ftp";
 print "ok 1\n";
@@ -39,7 +40,7 @@ $uri->password("secret");
 print "not " unless $uri eq "ftp://gisle%40aas.no:secret\@ftp.example.com/path";
 print "ok 9\n";
 
-$uri = URI->new("ftp://gisle\@aas.no:secret\@ftp.example.com/path");
+$uri = MarpaX::RFC::RFC3987->new("ftp://gisle\@aas.no:secret\@ftp.example.com/path");
 print "not " unless $uri eq "ftp://gisle\@aas.no:secret\@ftp.example.com/path";
 print "ok 10\n";
 

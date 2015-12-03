@@ -38,7 +38,7 @@ print "ok 8\n";
 $uri->password("secret");
 
 print "not " unless $uri eq "ftp://gisle%40aas.no:secret\@ftp.example.com/path";
-print "ok 9\n";
+print "ok 9 $uri\n";
 
 $uri = MarpaX::RFC::RFC3987->new("ftp://gisle\@aas.no:secret\@ftp.example.com/path");
 print "not " unless $uri eq "ftp://gisle\@aas.no:secret\@ftp.example.com/path";

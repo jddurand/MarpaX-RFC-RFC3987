@@ -46,6 +46,7 @@ BEGIN {
   $ROLE_PARAMS->{start}       = '<ftp uri>';
   $ROLE_PARAMS->{bnf}         = $BNF;
   $ROLE_PARAMS->{server}      = 1;
+  $ROLE_PARAMS->{userpass}    = 1;
   $ROLE_PARAMS->{mapping}     = {
                                  '<user>'         => 'user',
                                  '<pass>'         => 'password',
@@ -73,8 +74,8 @@ BEGIN {
 
 sub role_params { $ROLE_PARAMS }
 
-around build_default_port => sub { 21 };
-
 use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdentifier::BNF' => $ROLE_PARAMS;
+
+with 'MarpaX::Role::Parameterized::ResourceIdentifier::Role::ftp';
 
 1;

@@ -1,0 +1,16 @@
+#
+# http BNF as per https://httpwg.github.io/specs/rfc7230.html
+# Missing parts are inherited from _generic
+#
+
+<iabsolute path unit> ::= '/' <isegment>
+<iabsolute path>      ::= <iabsolute path unit>*
+<ipartial URI>        ::= <irelative part>
+                        | <irelative part> '?' <iquery>
+
+<http URI>            ::= 'http:' '//' <iauthority> <ipath abempty>
+                        | 'http:' '//' <iauthority> <ipath abempty> '?' <iquery>
+                        | 'http:' '//' <iauthority> <ipath abempty>              '#' <ifragment>
+                        | 'http:' '//' <iauthority> <ipath abempty> '?' <iquery> '#' <ifragment>
+<http>                ::= <http URI>
+                        | <ipartial URI>

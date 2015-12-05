@@ -75,10 +75,7 @@ sub as_uri {
   #       SHOULD use uppercase letters.
   # 2.3.  Replace the original character with the resulting character
   #       sequence (i.e., a sequence of %HH triplets).
-  $self->percent_encode($converted_input, $UCSCHAR_OR_IPRIVATE)
+  $self->percent_encode($converted_input, qr/[\s\S]/, $UCSCHAR_OR_IPRIVATE)
 }
-
-with 'MarpaX::RFC::RFC3987::Role::_common::BNF';
-with 'MarpaX::Role::Parameterized::ResourceIdentifier::Role::_common';
 
 1;

@@ -11,6 +11,8 @@ use Moo;
 # AUTHORITY
 
 with 'MarpaX::RFC::RFC3987::Role::_generic';
+with 'MarpaX::RFC::RFC3987::Role::_generic::BNF';
+with 'MarpaX::Role::Parameterized::ResourceIdentifier::Role::_generic';
 
 1;
 

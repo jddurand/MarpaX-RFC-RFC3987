@@ -53,6 +53,7 @@ sub role_params { $ROLE_PARAMS }
 
 use MooX::Role::Parameterized::With 'MarpaX::Role::Parameterized::ResourceIdentifier::BNF' => $ROLE_PARAMS;
 
-# with 'MarpaX::Role::Parameterized::ResourceIdentifier::Role::ftp';
+with 'MarpaX::RFC::RFC3987::Role::Plugins::http';
+with 'MarpaX::Role::Parameterized::ResourceIdentifier::Role::http';
 
 1;

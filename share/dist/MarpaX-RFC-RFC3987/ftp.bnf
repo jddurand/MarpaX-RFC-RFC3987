@@ -12,7 +12,7 @@
 # Note: changed to allow relative ftp
 #
 #
-<ftp iri>          ::= 'ftp:' <ftp hier part>
+<ftp>              ::= 'ftp:' <ftp hier part>
                      |        <ftp hier part>
 <ftp hier part>    ::= '//'                <ihost>
                      | '//' <userinfo> '@' <ihost>

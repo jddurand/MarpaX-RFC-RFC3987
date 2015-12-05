@@ -43,7 +43,7 @@ BEGIN {
   #
   $ROLE_PARAMS->{whoami}      = __PACKAGE__;
   $ROLE_PARAMS->{extends}     = 'MarpaX::RFC::RFC3987::Impl::_generic';
-  $ROLE_PARAMS->{start}       = '<ftp iri>';
+  $ROLE_PARAMS->{start}       = '<ftp>';
   $ROLE_PARAMS->{bnf}         = $BNF;
   $ROLE_PARAMS->{server}      = 1;
   $ROLE_PARAMS->{userpass}    = 1;

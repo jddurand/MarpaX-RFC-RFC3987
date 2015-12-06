@@ -9,7 +9,7 @@ local $MarpaX::RI::URI_COMPAT = 1;
 my $u = MarpaX::RFC::RFC3987->new("<http://www.perl.com/path?q=fôo>");
 
 #print "$u\n";
-#In IRI mode, character is UTF-8's c3b4
+#In IRI mode, ô character is UTF-8's c3b4
 print "not " unless $u eq "http://www.perl.com/path?q=f%C3%B4o";
 print "ok 1\n";
 

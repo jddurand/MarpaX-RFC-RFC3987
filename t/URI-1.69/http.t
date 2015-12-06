@@ -9,7 +9,8 @@ local $MarpaX::RI::URI_COMPAT = 1;
 my $u = MarpaX::RFC::RFC3987->new("<http://www.perl.com/path?q=fôo>");
 
 #print "$u\n";
-print "not " unless $u eq "http://www.perl.com/path?q=f%F4o";
+#In IRI mode, character is UTF-8's c3b4
+print "not " unless $u eq "http://www.perl.com/path?q=f%C3%B4o";
 print "ok 1\n";
 
 print "not " unless $u->port == 80;
@@ -17,19 +18,19 @@ print "ok 2\n";
 
 # play with port
 my $old = $u->port(8080);
-print "not " unless $old == 80 && $u eq "http://www.perl.com:8080/path?q=f%F4o";
+print "not " unless $old == 80 && $u eq "http://www.perl.com:8080/path?q=f%C3%B4o";
 print "ok 3\n";
 
 $u->port(80);
-print "not " unless $u eq "http://www.perl.com:80/path?q=f%F4o";
+print "not " unless $u eq "http://www.perl.com:80/path?q=f%C3%B4o";
 print "ok 4\n";
 
 $u->port("");
-print "not " unless $u eq "http://www.perl.com:/path?q=f%F4o" && $u->port == 80;
+print "not " unless $u eq "http://www.perl.com:/path?q=f%C3%B4o" && $u->port == 80;
 print "ok 5\n";
 
 $u->port(undef);
-print "not " unless $u eq "http://www.perl.com/path?q=f%F4o";
+print "not " unless $u eq "http://www.perl.com/path?q=f%C3%B4o";
 print "ok 6\n";
 
 my @q = $u->query_form;

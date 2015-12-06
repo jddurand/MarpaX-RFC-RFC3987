@@ -2,7 +2,6 @@ use strict;
 use warnings FATAL => 'all';
 
 package MarpaX::RFC::RFC3987::Impl::Plugins::http;
-use Moo;
 
 # ABSTRACT: Internationalized Resource Identifier (IRI): http implementation
 

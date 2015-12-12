@@ -46,6 +46,35 @@ BEGIN {
   $ROLE_PARAMS->{bnf}         = $BNF;
   $ROLE_PARAMS->{server}      = 1;
   $ROLE_PARAMS->{userpass}    = 1;
+  $ROLE_PARAMS->{mapping}     = {
+                                 '<dn>'         => 'dn',
+                                 '<question>'   => 'question',
+                                 '<attributes>' => 'attributes',
+                                 '<attrdesc>'   => 'attrdesc',
+                                 '<scope>'      => 'scope',
+                                 '<filter>'     => 'filter',
+                                 '<extensions>' => 'extensions',
+                                 '<extension>'  => 'extension',
+                                };
+  $ROLE_PARAMS->{struct_ext} = sub {
+    my $struct = {
+                  dn         => '',
+                  question   => '',
+                  attributes => '',
+                  attrdesc   => [],
+                  scope      => 'base',
+                  filter     => '(objectClass=*)',
+                  extensions => '',
+                  extension  => [],
+                 };
+    #
+    # Extending parent structure would have been done like this:
+    #
+    # my ($struct) = @_;
+    # $struct->{user} = undef;
+    # $struct->{password} = undef;
+    $struct
+  };
 }
 
 sub role_params { $ROLE_PARAMS }

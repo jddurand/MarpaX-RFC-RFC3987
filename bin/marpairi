@@ -65,7 +65,7 @@ Please refer to the DESCRIPTION section for the other options.
 
 =head1 DESCRIPTION
 
-B<This program> will dissect IRIs given on the command-line, following RFC3987 spec. Every IRI must obey at least to a "common" syntax, then eventually a "generic syntax", then eventually a "scheme specific syntax". Each syntax provide or overwrite some components. The parsing result is splitted in five explicit categories:
+B<This program> will dissect IRIs given on the command-line, following RFC3987 spec. Every IRI must obey at least to a "common" syntax, then eventually a "generic syntax", then eventually a "scheme specific syntax". Each syntax provide or overwrite some components. Some scheme specific grammars may set a default value for components. The parsing result is splitted in five explicit categories:
 
 =over 8
 
@@ -206,6 +206,8 @@ The following schemes provide no extension, but are just a grammar restriction:
 =item B<http>
 
 =item B<https>
+
+=item B<ldaps>
 
 =back
 

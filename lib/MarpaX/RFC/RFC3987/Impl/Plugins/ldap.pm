@@ -49,22 +49,20 @@ BEGIN {
   $ROLE_PARAMS->{mapping}     = {
                                  '<dn>'         => 'dn',
                                  '<question>'   => 'question',
-                                 '<attributes>' => 'attributes',
                                  '<attrdesc>'   => 'attrdesc',
                                  '<scope>'      => 'scope',
-                                 '<filter>'     => 'filter',
+                                 '<filtercomp>' => 'filtercomp',
                                  '<extensions>' => 'extensions',
                                  '<extension>'  => 'extension',
                                 };
   $ROLE_PARAMS->{struct_ext} = sub {
     my $struct = {
-                  dn         => '',
-                  question   => '',
-                  attributes => '',
+                  dn         => undef,
+                  question   => undef,
                   attrdesc   => [],
-                  scope      => 'base',
-                  filter     => '(objectClass=*)',
-                  extensions => '',
+                  scope      => undef,
+                  filtercomp => undef,
+                  extensions => undef,
                   extension  => [],
                  };
     #

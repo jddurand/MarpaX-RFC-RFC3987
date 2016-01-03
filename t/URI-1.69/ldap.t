@@ -19,12 +19,15 @@ Log::Any::Adapter->set('Log4perl');
 
 my $uri;
 
-local $MarpaX::RI::MARPA_TRACE_TERMINALS = 1;
+local $MarpaX::RI::MARPA_TRACE_TERMINALS = 99;
 #
-# Original ldap.t says: "ldap://host/dn=base?cn,sn?sub?objectClass=*");
-# I disagree this is not a valid LDAP address
+# Original ldap.t says: "ldap://host/dn=base?cn,sn?sub?objectClass=*") and
+# assumes objectClass=* is the filter.
+# I disagree. First this is not a valid LDAP address, and filter must be enclosed in ()
+# All in all, URI::ldap generated a confusion with readers and writers:
+# readers return only one part, while writers are overwriting what is after
 #
-$uri = MarpaX::RFC::RFC3987->new("ldap://host/dn=base?cn,sn?sub??objectClass=*");
+$uri = MarpaX::RFC::RFC3987->new("ldap://host/dn=base?cn,sn?sub?(objectClass=*)");
 
 print "not " unless $uri->host eq "host";
 print "ok 1\n";
@@ -51,17 +54,18 @@ $uri->dn("o=University of Michigan,c=US");
 print "not " unless "$uri" eq "ldap:///o=University%20of%20Michigan,c=US" &&
     $uri->dn eq "o=University of Michigan,c=US";
 print "ok 6\n";
-print STDERR "... " . $uri . "\n";
-print STDERR "... " . $uri->dn . "\n";
 
 $uri->host("ldap.itd.umich.edu");
 print "not " unless $uri->as_string eq "ldap://ldap.itd.umich.edu/o=University%20of%20Michigan,c=US";
 print "ok 7\n";
 
+#
+# Again I disagree for _scope and _filter: they have no defaults and here clearly they are undef
+#
 # check defaults
-print "not " unless $uri->_scope  eq "" &&
+print "not " unless # $uri->_scope  eq "" &&
                     $uri->scope   eq "base" &&
-                    $uri->_filter eq "" &&
+                    # $uri->_filter eq "" &&
                     $uri->filter  eq "(objectClass=*)";
 print "ok 8\n";
 
@@ -71,25 +75,35 @@ print "not " unless $uri eq "ldap://ldap.itd.umich.edu/o=University%20of%20Michi
 print "ok 9\n";
 
 # does attribute escapeing work as it should
-$uri->attributes($uri->attributes, "foo", ",", "*", "?", "#", "\0");
+# Formally, ",", "?", "# and "\0" cannot be part of attributes
+# $uri->attributes($uri->attributes, "foo", ",", "*", "?", "#", "\0");
+$uri->attributes($uri->attributes, "foo", "*");
 
-print "not " unless $uri->attributes eq "postalAddress,foo,%2C,*,%3F,%23,%00" &&
-                    join("-", $uri->attributes) eq "postalAddress-foo-,-*-?-#-\0";
+print "not " unless $uri->attributes eq "postalAddress,foo,*" &&
+                    join("-", $uri->attributes) eq "postalAddress-foo-*";
 print "ok 10\n";
 $uri->attributes("");
-
-$uri->scope("sub?#");
-print "not " unless $uri->query eq "?sub%3F%23" &&
-                    $uri->scope eq "sub?#";
+#
+# Once again, setting scope to "sub?#" is non-sense
+#
+# $uri->scope("sub?#");
+$uri->scope("sub");
+print "not " unless $uri->query eq "?sub" &&
+                    $uri->scope eq "sub";
 print "ok 11\n";
 $uri->scope("");
 
-$uri->filter("f=?,#");
+$uri->filter("(f=?,#)");
 print "not " unless $uri->query eq "??f=%3F,%23" &&
                     $uri->filter eq "f=?,#";
-
+print "... query=" . $uri->query . "\n";
+print "... filter=" . $uri->filter . "\n";
+use Data::Dumper;
+print STDERR Dumper($uri);
+exit;
 $uri->filter("(int=\\00\\00\\00\\04)");
 print "not " unless $uri->query eq "??(int=%5C00%5C00%5C00%5C04)";
+print "... query=" . $uri->query . "\n";
 print "ok 12\n";
 
 

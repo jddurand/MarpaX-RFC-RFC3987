@@ -3,7 +3,10 @@
 #
 # <host> and <port> are defined in Sections 3.2.2 and 3.2.3 of [RFC3986].
 # <filter> is from Section 3 of [RFC4515], subject to the provisions of the "Percent-Encoding" section
-
+#
+# For percent encoding things, the original grammar assumes that the input is ALREADY
+# percent-decoded.
+#
 <host maybe>       ::=
 <host maybe>       ::= <ihost>
 <host maybe>       ::= <ihost> COLON <port>
@@ -25,10 +28,10 @@
                      |                            <host maybe> <dn maybe>
 <scheme>           ::= 'ldap'
 <dn>               ::= <distinguishedName>               # From Section 3 of [RFC4514], subject to the provisions of the "Percent-Encoding" section
-<comma attrdesc>   ::= COMMA attrdesc
+<comma attrdesc>   ::= COMMA <attrdesc>
 <comma attrdesc any> ::= <comma attrdesc>*
 <attributes>       ::= <attrdesc> <comma attrdesc any>
-<comma selector>   ::= COMMA selector
+<comma selector>   ::= COMMA <selector>
 <comma selector any> ::= <comma selector>*
 <attrdesc>         ::= <selector> <comma selector any>
 <selector>         ::= <attributeSelector>              # From Section 4.5.1 of [RFC4511], subject to the provisions of the "Percent-Encoding" section
@@ -75,16 +78,16 @@ QUESTION        ~ [\x{3F}]             # question mark ("?")
 <approx>         ::= TILDE EQUALS
 <greaterorequal> ::= RANGLE EQUALS
 <lessorequal>    ::= LANGLE EQUALS
-<extensible>     ::= <attr> [dnattrs] [matchingrule] COLON EQUALS assertionvalue
-                   | [dnattrs] matchingrule COLON EQUALS assertionvalue
-<present>        ::= attr EQUALS ASTERISK
-<substring>      ::= attr EQUALS [initial] any [final]
-<initial>        ::= assertionvalue
+<extensible>     ::= <attr> [<dnattrs>] [<matchingrule>] COLON EQUALS <assertionvalue>
+                   |        [<dnattrs>]  <matchingrule>  COLON EQUALS <assertionvalue>
+<present>        ::= <attr> EQUALS ASTERISK
+<substring>      ::= <attr> EQUALS [<initial>] any [<final>]
+<initial>        ::= <assertionvalue>
 <assertionvalue ASTERISK> ::= <assertionvalue> ASTERISK
 <assertionvalue ASTERISK any> ::= <assertionvalue ASTERISK>*
 <any>            ::= ASTERISK <assertionvalue ASTERISK any>
-<final>          ::= assertionvalue
-<attr>           ::= attributedescription # The attributedescription rule is defined in Section 2.5 of [RFC4512].
+<final>          ::= <assertionvalue>
+<attr>           ::= <attributedescription> # The attributedescription rule is defined in Section 2.5 of [RFC4512].
 <dnattrs>        ::= COLON 'dn'
 <matchingrule>   ::= COLON <oid>
 <assertionvalue> ::= <valueencoding> # The <valueencoding> rule is used to encode an <AssertionValue> from Section 4.1.6 of [RFC4511]
@@ -138,8 +141,8 @@ LUTF1                         ~ [\x{01}-\x{1F}\x{21}\x{24}-\x{2A}\x{2D}-\x{3A}\x
                               | UTFMB
 SUTF1                         ~ [\x{01}-\x{21}\x{23}-\x{2A}\x{2D}-\x{3A}\x{3D}\x{3F}-\x{5B}\x{5D}-\x{7F}]
 <pair>                      ::= ESC ESC
-                              | ESC special
-                              | ESC hexpair
+                              | ESC <special>
+                              | ESC <hexpair>
 <special>                   ::= <escaped>
                               | SPACE
                               | SHARP

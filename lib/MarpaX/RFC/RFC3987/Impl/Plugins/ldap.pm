@@ -47,40 +47,26 @@ BEGIN {
   $ROLE_PARAMS->{server}      = 1;
   $ROLE_PARAMS->{userpass}    = 1;
   $ROLE_PARAMS->{mapping}     = {
-                                 '<host maybe>'       => 'host_maybe',
-                                 '<dn maybe>'         => 'dn_maybe',
-                                 '<dn>'               => 'dn',
-                                 '<question maybe>'   => 'question_maybe',
-                                 '<scope maybe>'      => 'scope_maybe',
-                                 '<scope>'            => 'scope',
-                                 '<filter maybe>'     => 'filter_maybe',
-                                 '<filter>'           => 'filter',
-                                 '<selector>'         => 'selector',
-                                 '<filtercomp>'       => 'filtercomp',
-                                 '<extensions maybe>' => 'extensions_maybe',
-                                 '<extension>'        => 'extensions',
+                                 '<dn>'         => 'dn',
+                                 '<question>'   => 'question',
+                                 '<scope>'      => 'scope',
+                                 '<attributes>' => 'attribute',
+                                 '<attrdesc>'   => 'attributes',
+                                 '<filter>'     => 'filter',
+                                 '<extensions>' => 'extension',
+                                 '<extension>'  => 'extensions',
                                 };
   $ROLE_PARAMS->{struct_ext} = sub {
     my $struct = {
-                  host_maybe       => undef,
-                  dn_maybe         => undef,
-                  dn               => undef,
-                  question_maybe   => undef,
-                  scope_maybe      => undef,
-                  scope            => undef,
-                  filter_maybe     => undef,
-                  filter           => undef,
-                  selector         => [],
-                  filtercomp       => undef,
-                  extensions_maybe => undef,
-                  extensions       => [],
+                  dn         => undef,
+                  question   => undef,
+                  scope      => undef,
+                  attribute  => undef,
+                  attributes => [],
+                  filter     => undef,
+                  extension  => undef,
+                  extensions => []
                  };
-    #
-    # Extending parent structure would have been done like this:
-    #
-    # my ($struct) = @_;
-    # $struct->{user} = undef;
-    # $struct->{password} = undef;
     $struct
   };
 }

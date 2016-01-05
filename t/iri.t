@@ -23,20 +23,11 @@ BEGIN {
   use_ok('MarpaX::RFC::RFC3987') || print "Bail out!\n";
 }
 
-#
-# We do not want the test to depend on the environnement
-#
-no warnings 'once';
-local $MarpaX::RI::URI_COMPAT                = 0;
-local $MarpaX::RI::ABS_REMOTE_LEADING_DOTS   = 0;
-local $MarpaX::RI::ABS_ALLOW_RELATIVE_SCHEME = 0;
-
 our $_test_abs_base = $_test_abs_base = 'http://a/b/c/d;p?q';
 subtest "Reference Resolution with base as Str"               => \&_test_abs_base_as_Str;
 subtest "Reference Resolution with base as Object"            => \&_test_abs_base_as_Object;
 subtest "Reference Resolution and non-strict mode"            => \&_test_abs_old_parser_mode;
-subtest "Overload with URI compatibility"                     => \&_test_overload_with_uri_compatibility;
-subtest "Overload without URI compatibility"                  => \&_test_overload_without_uri_compatibility;
+subtest "Overload"                                            => \&_test_overload;
 subtest "is_absolute"                                         => \&_test_is_absolute;
 subtest "Cloning "                                            => \&_test_clone;
 subtest "canonical() and normalized() are identical"          => \&_test_canonical_and_normalized;
@@ -51,8 +42,16 @@ done_testing();
 #
 # Proxies
 #
-sub _test_abs_base_as_Str                    { local $MarpaX::RI::ABS_REMOTE_LEADING_DOTS = 1; _test_abs($_test_abs_base) }
-sub _test_abs_base_as_Object                 { local $MarpaX::RI::ABS_REMOTE_LEADING_DOTS = 1; _test_abs(MarpaX::RFC::RFC3987->new($_test_abs_base)) }
+sub _test_abs_base_as_Str {
+    no warnings 'once';
+    local $MarpaX::RI::ABS_REMOTE_LEADING_DOTS = 1;
+    _test_abs($_test_abs_base)
+}
+sub _test_abs_base_as_Object {
+    no warnings 'once';
+    local $MarpaX::RI::ABS_REMOTE_LEADING_DOTS = 1;
+    _test_abs(MarpaX::RFC::RFC3987->new($_test_abs_base))
+}
 
 #
 # Constants
@@ -112,26 +111,16 @@ use constant {
                               }
 };
 use constant {
-  TEST_OVERLOAD_WITH_URI_COMPATIBILITY => {
-                                           '!=' => [ "http://example.org/~user", "http://example.org/%7euser", 1 ],
-                                           '==' => [ "http://example.org/~user", "http://example.org/%7euser", 0 ],
-                                           'eq' => [ "http://example.org/~user", "http://example.org/%7euser", 0 ],
-                                           'ne' => [ "http://example.org/~user", "http://example.org/%7euser", 1 ]
-                   }
+  TEST_OVERLOAD => {
+      '!=' => [ "http://example.org/~user", "http://example.org/%7euser", 0 ],
+      '==' => [ "http://example.org/~user", "http://example.org/%7euser", 1 ],
+      'eq' => [ "http://example.org/~user", "http://example.org/%7euser", 1 ],
+      'ne' => [ "http://example.org/~user", "http://example.org/%7euser", 0 ]
+  }
 };
-sub _test_overload_with_uri_compatibility    { local $MarpaX::RI::URI_COMPAT  = 1; _test_overload(TEST_OVERLOAD_WITH_URI_COMPATIBILITY) }
-use constant {
-  TEST_OVERLOAD_WITHOUT_URI_COMPATIBILITY => {
-                                              '!=' => [ "http://example.org/~user", "http://example.org/%7euser", 0 ],
-                                              '==' => [ "http://example.org/~user", "http://example.org/%7euser", 1 ],
-                                              'eq' => [ "http://example.org/~user", "http://example.org/%7euser", 0 ],
-                                              'ne' => [ "http://example.org/~user", "http://example.org/%7euser", 1 ]
-                   }
-};
-sub _test_overload_without_uri_compatibility { local $MarpaX::RI::URI_COMPAT = 0; _test_overload(TEST_OVERLOAD_WITHOUT_URI_COMPATIBILITY) }
 use constant {
   TEST_IS_ABSOLUTE => {
-                       "/localhost/?jdd#f±f2"                                => 0,
+                       "/localhost/?jdd#f±f2"                               => 0,
                        "ftp://ftp.is.co.za/rfc/rfc1808.txt"                  => 1,
                        "http://www.ietf.org/rfc/rfc2396.txt"                 => 1,
                        "ldap://[2001:db8::7]/c=GB?objectClass?one"           => 1,
@@ -238,6 +227,7 @@ use constant {
 sub _test_abs {
   plan tests => scalar(keys %{TEST_ABS()});
 
+  no warnings 'once';
   local $MarpaX::RI::ABS_REMOTE_LEADING_DOTS = 1;
   my $base = shift;
   my $blessed_base = blessed($base) || 'Str';
@@ -250,26 +240,26 @@ sub _test_abs {
 }
 
 sub _test_abs_old_parser_mode {
-  local $MarpaX::RI::ABS_REMOTE_LEADING_DOTS = 1;
-  plan tests => scalar(keys %{TEST_ABS_OLD_PARSER_MODE()});
+    no warnings 'once';
+    local $MarpaX::RI::ABS_REMOTE_LEADING_DOTS = 1;
+    plan tests => scalar(keys %{TEST_ABS_OLD_PARSER_MODE()});
 
-  my $base = MarpaX::RFC::RFC3987->new($_test_abs_base);
+    my $base = MarpaX::RFC::RFC3987->new($_test_abs_base);
 
-  local $MarpaX::RI::ABS_ALLOW_RELATIVE_SCHEME = 1;
-  foreach (keys %{TEST_ABS_OLD_PARSER_MODE()}) {
-    my $wanted = TEST_ABS_OLD_PARSER_MODE()->{$_};
-    my $got    = MarpaX::RFC::RFC3987->new($_)->abs($base);
-    is($got, $wanted, "base '$base', ref '$_', non-strict mode");
-  }
+    local $MarpaX::RI::ABS_ALLOW_RELATIVE_SCHEME = 1;
+    foreach (keys %{TEST_ABS_OLD_PARSER_MODE()}) {
+        my $wanted = TEST_ABS_OLD_PARSER_MODE()->{$_};
+        my $got    = MarpaX::RFC::RFC3987->new($_)->abs($base);
+        is($got, $wanted, "base '$base', ref '$_', non-strict mode");
+    }
 }
 
 sub _test_overload {
-  my $source = shift;
-  plan tests => scalar(keys %{$source});
+  plan tests => scalar(keys %{TEST_OVERLOAD()});
 
-  foreach (sort keys %{$source}) {
+  foreach (sort keys %{TEST_OVERLOAD()}) {
     my $test = $_;
-    my @input = @{$source->{$test}};
+    my @input = @{TEST_OVERLOAD()->{$test}};
     my $expected = pop @input;
     my @obj = map { MarpaX::RFC::RFC3987->new($_) } @input;
     if ($test eq '!=')      { my $value = $obj[0] != $obj[1]; ok($value == $expected, "'$obj[0]' != '$obj[1]' ? " . ($expected ? "yes" : "no"));

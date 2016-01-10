@@ -65,8 +65,17 @@ QUESTION        ~ [\x{3F}]             # question mark ("?")
 <or>             ::= VERTBAR <filterlist>
 <not>            ::= EXCLAMATION <filter>
 <filterlist>     ::= <filter>+
+# From http://tools.ietf.org/search/rfc4515 there is a know ambiguity:
+#
+# Note that although both the <substring> and <present> productions in
+# the grammar above can produce the "attr=*" construct, this construct
+# is used only to denote a presence filter.
+#
+# So it says clearly that it is not important, therefore we give arbitrarily
+# the precedence to the first one, i.e. <present>
+#
 <item>           ::= <simple>
-                   | <present>
+                   | <present>        rank => 1
                    | <substring>
                    | <extensible>
 <simple>         ::= <attr> <filtertype> <assertionvalue>
@@ -78,10 +87,17 @@ QUESTION        ~ [\x{3F}]             # question mark ("?")
 <approx>         ::= TILDE EQUALS
 <greaterorequal> ::= RANGLE EQUALS
 <lessorequal>    ::= LANGLE EQUALS
-<extensible>     ::= <attr> [<dnattrs>] [<matchingrule>] COLON EQUALS <assertionvalue>
-                   |        [<dnattrs>]  <matchingrule>  COLON EQUALS <assertionvalue>
+<extensible>     ::= <attr> <dnattrs> <matchingrule> COLON EQUALS <assertionvalue>
+                   | <attr> <dnattrs>                COLON EQUALS <assertionvalue>
+                   | <attr>           <matchingrule> COLON EQUALS <assertionvalue>
+                   | <attr>                          COLON EQUALS <assertionvalue>
+                   |        <dnattrs> <matchingrule> COLON EQUALS <assertionvalue>
+                   |                  <matchingrule> COLON EQUALS <assertionvalue>
 <present>        ::= <attr> EQUALS ASTERISK
-<substring>      ::= <attr> EQUALS [<initial>] any [<final>]
+<substring>      ::= <attr> EQUALS <initial> any <final>
+                   | <attr> EQUALS <initial> any
+                   | <attr> EQUALS           any <final>
+                   | <attr> EQUALS           any
 <initial>        ::= <assertionvalue>
 <assertionvalue ASTERISK> ::= <assertionvalue> ASTERISK
 <assertionvalue ASTERISK any> ::= <assertionvalue ASTERISK>*

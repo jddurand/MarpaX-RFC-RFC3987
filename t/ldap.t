@@ -23,7 +23,7 @@ BEGIN {
   use_ok('MarpaX::RFC::RFC3987') || print "Bail out!\n";
 }
 
-&check(MarpaX::RFC::RFC3987->new("ldap://host:123/dn=base?cn,sn?sub?(objectClass=*)?!this=that,that=those"),
+check(MarpaX::RFC::RFC3987->new("ldap://host:123/dn=base?cn,sn?sub?(objectClass=*)?!this=that,that=those"),
        'host',                      # host
        123,                         # port
        'dn=base',                   # dn
@@ -37,7 +37,7 @@ BEGIN {
 #
 # From Ruby MRI/test/uri/test_ldap.rb
 #
-&check(MarpaX::RFC::RFC3987->new('ldap://ldap.jaist.ac.jp/o=JAIST,c=JP?sn?base?(sn=ttate*)'),
+check(MarpaX::RFC::RFC3987->new('ldap://ldap.jaist.ac.jp/o=JAIST,c=JP?sn?base?(sn=ttate*)'),
        'ldap.jaist.ac.jp',          # host
        undef,                       # port
        'o=JAIST,c=JP',              # dn
@@ -47,6 +47,112 @@ BEGIN {
        '(sn=ttate*)',               # filter
        undef,                       # extension
        []                           # extensions
+    );
+#
+# In our case, this is always the unescaped version that is returned -;
+#
+check(MarpaX::RFC::RFC3987->new('ldap:///o=University%20of%20Michigan,c=US'),
+       undef,                       # host
+       undef,                       # port
+       'o=University of Michigan,c=US', # dn
+       undef,                       # attribute
+       [],                          # attributes
+       undef,                       # scope
+       undef,                       # filter
+       undef,                       # extension
+       []                           # extensions
+    );
+check(MarpaX::RFC::RFC3987->new('ldap://ldap.itd.umich.edu/o=University%20of%20Michigan,c=US'),
+       'ldap.itd.umich.edu',        # host
+       undef,                       # port
+       'o=University of Michigan,c=US', # dn
+       undef,                       # attribute
+       [],                          # attributes
+       undef,                       # scope
+       undef,                       # filter
+       undef,                       # extension
+       []                           # extensions
+    );
+check(MarpaX::RFC::RFC3987->new('ldap://ldap.itd.umich.edu/o=University%20of%20Michigan,c=US?postalAddress'),
+       'ldap.itd.umich.edu',        # host
+       undef,                       # port
+       'o=University of Michigan,c=US', # dn
+       'postalAddress',             # attribute
+       ['postalAddress'],           # attributes
+       undef,                       # scope
+       undef,                       # filter
+       undef,                       # extension
+       []                           # extensions
+    );
+check(MarpaX::RFC::RFC3987->new('ldap://host.com:6666/o=University%20of%20Michigan,c=US??sub?(cn=Babs%20Jensen)'),
+       'host.com',                  # host
+       6666,                        # port
+       'o=University of Michigan,c=US', # dn
+       undef,                       # attribute
+       [],                          # attributes
+       'sub',                       # scope
+       '(cn=Babs Jensen)',          # filter
+       undef,                       # extension
+       []                           # extensions
+    );
+check(MarpaX::RFC::RFC3987->new('ldap://ldap.itd.umich.edu/c=GB?objectClass?one'),
+       'ldap.itd.umich.edu',        # host
+       undef,                       # port
+       'c=GB',                      # dn
+       'objectClass',               # attribute
+       ['objectClass'],             # attributes
+       'one',                       # scope
+       undef,                       # filter
+       undef,                       # extension
+       []                           # extensions
+    );
+check(MarpaX::RFC::RFC3987->new('ldap://ldap.question.com/o=Question%3f,c=US?mail'),
+       'ldap.question.com',         # host
+       undef,                       # port
+       'o=Question?,c=US',          # dn
+       'mail',                      # attribute
+       ['mail'],                    # attributes
+       undef,                       # scope
+       undef,                       # filter
+       undef,                       # extension
+       []                           # extensions
+    );
+#
+# I do not understand the Ruby example... for me there is a missing '?'
+# C.f. the output of ldapurl -h 'ldap.itd.umich.edu' -b 'o=Babsco,c=US' -f '(int=\00\00\00\04)'
+#
+check(MarpaX::RFC::RFC3987->new('ldap://ldap.netscape.com/o=Babsco,c=US???(int=%5c00%5c00%5c00%5c04)'),
+      'ldap.netscape.com',         # host
+      undef,                       # port
+      'o=Babsco,c=US',             # dn
+      undef,                       # attribute
+      [],                          # attributes
+      undef,                       # scope
+      '(int=\\00\\00\\00\\04)',    # filter
+      undef,                       # extension
+      []                           # extensions
+    );
+check(MarpaX::RFC::RFC3987->new('ldap:///??sub??bindname=cn=Manager%2co=Foo'),
+      undef,                       # host
+      undef,                       # port
+      '',                          # dn
+      undef,                       # attribute
+      [],                          # attributes
+      'sub',                       # scope
+      undef,                       # filter
+      'bindname=cn=Manager,o=Foo', # extension
+      ['bindname=cn=Manager', 'o=Foo'] # extensions
+    );
+check(MarpaX::RFC::RFC3987->new('ldap:///??sub??!bindname=cn=Manager%2co=Foo'),
+      undef,                       # host
+      undef,                       # port
+      '',                          # dn
+      undef,                       # attribute
+      [],                          # attributes
+      'sub',                       # scope
+      undef,                       # filter
+      '!bindname=cn=Manager,o=Foo', # extension
+      ['!bindname=cn=Manager', 'o=Foo'] # extensions
     );
 
 done_testing();

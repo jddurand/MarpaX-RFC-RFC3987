@@ -23,17 +23,46 @@ BEGIN {
   use_ok('MarpaX::RFC::RFC3987') || print "Bail out!\n";
 }
 
-my $ldap = MarpaX::RFC::RFC3987->new("ldap://host:123/dn=base?cn,sn?sub?(objectClass=*)?!this=that,that=those");
-is(      $ldap->host,                              'host', "host is 'host'");
-is       ($ldap->port,                                123, "port is 123");
-is       ($ldap->dn,                            'dn=base', "dn is 'dn=base'");
-is       ($ldap->attribute,                       'cn,sn', "attribute is 'cn,sn'");
-is_deeply($ldap->attributes,                 ['cn', 'sn'], "attributes is ['cn', 'sn']");
-is       ($ldap->scope,                             'sub', "scope is 'sub'");
-is       ($ldap->filter,                '(objectClass=*)', "filter is '(objectClass=*)'");
-is       ($ldap->extension,       '!this=that,that=those', "extension is '!this=that,that=those'");
-is_deeply($ldap->extensions, ['!this=that', 'that=those'], "extensions is ['!this=that', 'that=those']");
+&check(MarpaX::RFC::RFC3987->new("ldap://host:123/dn=base?cn,sn?sub?(objectClass=*)?!this=that,that=those"),
+       'host',                      # host
+       123,                         # port
+       'dn=base',                   # dn
+       'cn,sn',                     # attribute
+       ['cn', 'sn'],                # attributes
+       'sub',                       # scope
+       '(objectClass=*)',           # filter
+       '!this=that,that=those',     # extension
+       ['!this=that', 'that=those'] # extensions
+    );
+#
+# From Ruby MRI/test/uri/test_ldap.rb
+#
+&check(MarpaX::RFC::RFC3987->new('ldap://ldap.jaist.ac.jp/o=JAIST,c=JP?sn?base?(sn=ttate*)'),
+       'ldap.jaist.ac.jp',          # host
+       undef,                       # port
+       'o=JAIST,c=JP',              # dn
+       'sn',                        # attribute
+       ['sn'],                      # attributes
+       'base',                      # scope
+       '(sn=ttate*)',               # filter
+       undef,                       # extension
+       []                           # extensions
+    );
 
 done_testing();
+
+sub check {
+    my ($ldap, $host, $port, $dn, $attribute, $attributes, $scope, $filter, $extension, $extensions) = @_;
+
+    is       ($ldap->_host,                             $host, "host is " . ($host // 'undef'));
+    is       ($ldap->_port,                             $port, "port is " . ($port // 'undef'));
+    is       ($ldap->_dn,                                 $dn, "dn is " . ($dn // 'undef'));
+    is       ($ldap->_attribute,                   $attribute, "attribute is " . ($attribute // 'undef'));
+    is_deeply($ldap->_attributes,                 $attributes, "attributes is [" . join(', ', @{$attributes}) . "]");
+    is       ($ldap->_scope,                           $scope, "scope is " . ($scope // 'undef'));
+    is       ($ldap->_filter,                         $filter, "filter is " . ($filter // 'undef'));
+    is       ($ldap->_extension,                   $extension, "extension is " . ($extension // 'undef'));
+    is_deeply($ldap->_extensions,                 $extensions, "extensions is [" . join(', ', @{$extensions}) . "]");
+}
 
 1;

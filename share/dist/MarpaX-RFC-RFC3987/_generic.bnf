@@ -157,8 +157,9 @@ IPv4address      ::= <dec octet> '.' <dec octet> '.' <dec octet> '.' <dec octet>
 <ifragment unit> ::= <ipchar> | [/?]
 <ifragment>      ::= <ifragment unit>*
 
-<lexeme pct encoded unit> ~ '%' _HEXDIG _HEXDIG
-<lexeme pct encoded> ~ <lexeme pct encoded unit>+
+<_lexeme pct encoded unit> ~ '%' _HEXDIG _HEXDIG
+<lexeme pct encoded unit> ~ <_lexeme pct encoded unit>
+<lexeme pct encoded> ~ <_lexeme pct encoded unit>+
 <pct encoded>      ::= <lexeme pct encoded>
 
 <iunreserved>    ::= ALPHA | DIGIT | [-._~] | <ucschar>
@@ -170,10 +171,13 @@ IPv4address      ::= <dec octet> '.' <dec octet> '.' <dec octet> '.' <dec octet>
 <sub delims>     ::= [!$&'()*+,;=]
 
 #
-# These rules are informative: they are not productive
+# These rules are informative: they are not productive. Though
+# thew MAY be used in derived BNFs.
 #
 <reserved>       ::= <gen delims> | <sub delims>
 <gen delims>     ::= [:/?\[\]@#]
+<escaped>        ::= <lexeme pct encoded unit>
+<uric>           ::= <reserved> | <iunreserved> | <escaped>
 #
 # No perl meta-character, just to be sure
 #

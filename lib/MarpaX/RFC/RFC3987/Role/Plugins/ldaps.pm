@@ -10,7 +10,9 @@ use Moo::Role;
 
 # AUTHORITY
 
-with 'MarpaX::RFC::RFC3987::Role::_generic';
+with 'MarpaX::RFC::RFC3987::Role::Plugins::ldap';
+
+around build_default_port => sub { 636 };
 
 1;
 

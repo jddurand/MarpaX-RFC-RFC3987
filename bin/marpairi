@@ -1,4 +1,7 @@
 #!perl
+
+# PODNAME: marpairi
+
 use strict;
 use warnings FATAL => 'all';
 use Log::Any qw/$log/;
@@ -33,7 +36,7 @@ binmode STDERR, ":encoding(utf8)";
 foreach (@ARGV) {
   local $MarpaX::RI::MARPA_TRACE_TERMINALS = 1;
   my $ri = MarpaX::RFC::RFC3987->new(@ARGV);
-  print STDERR Dumper($ri);
+  print STDERR Dumper($ri->default_port);
 }
 
 exit(EXIT_SUCCESS);

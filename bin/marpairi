@@ -2,24 +2,42 @@
 
 # PODNAME: marpairi
 
+# ABSTRACT: Dumper IRI parsing result
+
+# VERSION
+
+# AUTHORITY
+
 use strict;
 use warnings FATAL => 'all';
+#
+# We have a strong dependency on MarpaX::Role::Parameterized::ResourceIdentifier
+# and instead of repeating its version in all .pm, I do it once for all here
+#
+use MarpaX::Role::Parameterized::ResourceIdentifier 0.002;
+
+package myOptions;
+use Moo;
+use MooX::Options protect_argv => 0;
+
+option 'raw'             => ( is => 'ro', default => sub { 1 },  doc => 'Raw parse value. Default is on. ' );
+option 'normalized'      => ( is => 'ro', default => sub { 0 },  doc => 'Normalized parse value. Default is off.' );
+option 'escaped'         => ( is => 'ro', default => sub { 0 },  doc => 'Escaped parse value. Default is off.' );
+option 'unescaped'       => ( is => 'ro', default => sub { 0 },  doc => 'Unescaped parse value. Default is off.' );
+option 'converted'       => ( is => 'ro', default => sub { 0 },  doc => 'URI-converted parse value. Default is off.' );
+option 'trace_terminals' => ( is => 'ro', default => sub { 0 },  doc => 'Trace terminals seen when parsing. Default is off.' );
+option 'trace_values'    => ( is => 'ro', default => sub { 0 },  doc => 'Trace parse tree evaluation. Default is off.' );
+
+package main;
+use myOptions;
 use Log::Any qw/$log/;
 use Log::Any::Adapter;
 use Log::Log4perl qw/:easy/;
 use MarpaX::RFC::RFC3987;
 use Data::Dumper;
-use Getopt::Long;
-use Pod::Usage;
 use POSIX qw/EXIT_SUCCESS/;
 
-my $man = 0;
-my $help = 0;
-GetOptions(
-           'help|?' => \$help,
-           man => \$man) || pod2usage(2);
-pod2usage(1) if $help;
-pod2usage(-exitval => EXIT_SUCCESS, -verbose => 2) if $man;
+my $opt = myOptions->new_with_options;
 
 my $defaultLog4perlConf = <<DEFAULT_LOG4PERL_CONF;
 log4perl.rootLogger              = TRACE, Screen
@@ -34,9 +52,25 @@ binmode STDOUT, ":encoding(utf8)";
 binmode STDERR, ":encoding(utf8)";
 
 foreach (@ARGV) {
-  local $MarpaX::RI::MARPA_TRACE_TERMINALS = 1;
-  my $ri = MarpaX::RFC::RFC3987->new(@ARGV);
-  print STDERR Dumper($ri->default_port);
+    no warnings 'once';
+    local $MarpaX::RI::MARPA_TRACE_TERMINALS = $opt->trace_terminals;
+    local $MarpaX::RI::MARPA_TRACE_VALUES    = $opt->trace_values;
+    local $Data::Dumper::Terse               = 1;
+    local $Data::Dumper::Sortkeys            = 1;
+
+    my $ri = MarpaX::RFC::RFC3987->new(@ARGV);
+    foreach (qw/raw normalized escaped unescaped converted/) {
+        my $what = $_;
+        next if ! $opt->can($what);
+        next if ! $opt->$what;
+        my $meth = "_${what}_struct";
+        next if ! $ri->can($meth);
+        #
+        # Just because I do not want the blessing to appear in the dump
+        #
+        my %struct = %{$ri->$meth};
+        print Dumper(\%struct);
+    }
 }
 
 exit(EXIT_SUCCESS);
@@ -51,31 +85,35 @@ marpairi - IRI dissection
 
 marpairi [options] [iri ...]
 
-Options:
-
-  --help            Short help
-  --man             Full documentation
-
 =head1 OPTIONS
 
 =over 8
 
 =item B<--help>
+
+Help
+
 =item B<--man>
+
+Man page
 
 =back
 
-Please refer to the DESCRIPTION section for the other options.
+Please refer to the DESCRIPTION section below for the other options.
 
 =head1 DESCRIPTION
 
-B<This program> will dissect IRIs given on the command-line, following RFC3987 spec. Every IRI must obey at least to a "common" syntax, then eventually a "generic syntax", then eventually a "scheme specific syntax". Each syntax provide or overwrite some components. Some scheme specific grammars may set a default value for components. The parsing result is splitted in five explicit categories:
+B<marpairi> will dissect IRIs given on the command-line, following RFC3987 spec, and dump the resulting parse tree value.
+
+Every IRI must obey at least to a "common" syntax, then eventually a "generic syntax", then eventually a "scheme specific syntax". Please refer to SCHEME SPECIFIC SUPPORT.
+
+Each syntax provide or overwrite some components. Some scheme specific grammars may set a default value for components, and add new components. The parsing result is splitted in five explicit categories:
 
 =over 8
 
 =item B<--raw>
 
-The input is parsed as-is.
+The original input, parsed as-is.
 
 =item B<--normalized>
 
@@ -95,126 +133,6 @@ Components are converted to a URI compatible syntax.
 
 =back
 
-=over 8
-
-=item B<common syntax>
-
-=over 8
-
-=item B<--scheme>
-
-=item B<--opaque>
-
-=item B<--fragment>
-
-=back
-
-=back
-
-When an IRI obey to a "generic" grammar, then the following components are available:
-
-=over 8
-
-=item B<generic syntax>
-
-=over 8
-
-=item B<--hier_part>
-
-=item B<--query>
-
-=item B<--segment>
-
-=item B<--authority>
-
-=item B<--path>
-
-=item B<--relative_ref>
-
-=item B<--relative_part>
-
-=item B<--userinfo>
-
-=item B<--host>
-
-=item B<--port>
-
-=item B<--ip_literal>
-
-=item B<--ipv4_address>
-
-=item B<--reg_name>
-
-=item B<--ipv6_address>
-
-=item B<--ipv6_addrz>
-
-=item B<--ipvfuture>
-
-=item B<--zoneid>
-
-=item B<--segments>
-
-=back
-
-=back
-
-Then, scheme specific grammars, may provide more information. The following explicit scheme extensions are hereby provided:
-
-=over 8
-
-=item B<ftp>
-
-=over 8
-
-=item B<--user>
-
-=item B<--password>
-
-=item B<--typecode>
-
-=item B<--cwd_part>
-
-=item B<--last_segment>
-
-=back
-
-=item B<ldap>
-
-=over 8
-
-=item B<--dn>
-
-=item B<--question>
-
-=item B<--attributes>
-
-=item B<--attrdesc>
-
-=item B<--scope>
-
-=item B<--filter>
-
-=item B<--extensions>
-
-=item B<--extension>
-
-=back
-
-=back
-
-The following schemes provide no extension, but are just a grammar restriction:
-
-=over 8
-
-=item B<http>
-
-=item B<https>
-
-=item B<ldaps>
-
-=back
-
 Extra debugging is provided via the following options:
 
 =over 8
@@ -228,6 +146,26 @@ All terminals are traced during parsing, for every grammar (common and/or generi
 All parse tree values are traced during evaluation, for every grammar (common and/or generic, specific).
 
 =back
+
+=head1 SCHEME SPECIFIC SUPPORT
+
+The following schemes are explicitely supported:
+
+=over 8
+
+=item B<ftp>
+
+=item B<http>
+
+=item B<https>
+
+=item B<ldap>
+
+=item B<ldaps>
+
+=back
+
+Any other scheme will fall back into the generic syntax when possible, or the common syntax.
 
 =head1 SEE ALSO
 
